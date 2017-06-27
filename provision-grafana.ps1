@@ -49,6 +49,32 @@ nssm set $grafanaServiceName AppStdout $grafanaHome\logs\service.log
 nssm set $grafanaServiceName AppStderr $grafanaHome\logs\service.log
 Start-Service $grafanaServiceName
 
+$apiBaseUrl = 'http://localhost:3000/api'
+$apiAuthorizationHeader = "Basic $([Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes('admin:admin')))"
+
+function Invoke-GrafanaApi($relativeUrl, $body, $method='Post') {
+    Invoke-RestMethod `
+        -Method $method `
+        -Uri $apiBaseUrl/$relativeUrl `
+        -ContentType 'application/json' `
+        -Headers @{
+            Authorization = $apiAuthorizationHeader
+        } `
+        -Body (ConvertTo-Json -Depth 100 $body)
+}
+
+function New-GrafanaDataSource($body) {
+    Invoke-GrafanaApi datasources $body
+}
+
+# create a data source for the local prometheus server.
+New-GrafanaDataSource @{
+    name = 'Prometheus'
+    type = 'prometheus'
+    url = 'http://localhost:9090'
+    access = 'direct'
+    basicAuth = $false
+}
 # add default desktop shortcuts (called from a provision-base.ps1 generated script).
 [IO.File]::WriteAllText(
     "$env:USERPROFILE\ConfigureDesktop-Grafana.ps1",
