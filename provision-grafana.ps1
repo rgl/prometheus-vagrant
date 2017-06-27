@@ -67,6 +67,10 @@ function New-GrafanaDataSource($body) {
     Invoke-GrafanaApi datasources $body
 }
 
+function New-GrafanaDashboard($body) {
+    Invoke-GrafanaApi dashboards/db $body
+}
+
 # create a data source for the local prometheus server.
 New-GrafanaDataSource @{
     name = 'Prometheus'
@@ -75,6 +79,20 @@ New-GrafanaDataSource @{
     access = 'direct'
     basicAuth = $false
 }
+
+# create a dashboard for the wmi_exporter.
+# NB this dashboard originaly came from https://grafana.com/dashboards/2129
+$dashboard = (Get-Content -Raw grafana-windows-dashboard.json) `
+    -replace '\${DS_PROMETHEUS}','Prometheus' `
+    | ConvertFrom-Json
+$dashboard.PSObject.Properties.Remove('__inputs')
+$dashboard.PSObject.Properties.Remove('__requires')
+$dashboard.title = 'Windows'
+#Invoke-GrafanaApi dashboards/db/$($dashboard.title.ToLower() -replace ' ','-') $null Delete
+New-GrafanaDashboard @{
+    dashboard = $dashboard
+}
+
 # add default desktop shortcuts (called from a provision-base.ps1 generated script).
 [IO.File]::WriteAllText(
     "$env:USERPROFILE\ConfigureDesktop-Grafana.ps1",
