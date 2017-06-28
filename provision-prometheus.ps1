@@ -30,6 +30,7 @@ nssm set $prometheusServiceName AppStdout $prometheusHome\logs\service.log
 nssm set $prometheusServiceName AppStderr $prometheusHome\logs\service.log
 nssm set $prometheusServiceName AppParameters `
     "-config.file=$prometheusHome/prometheus.yml" `
+    '-web.listen-address=localhost:9090' `
     "-storage.local.path=$prometheusHome/data" `
     "-web.console.libraries=$prometheusInstallHome/console_libraries" `
     "-web.console.templates=$prometheusInstallHome/consoles"
@@ -47,7 +48,7 @@ sc.exe failure wmi_exporter reset= 0 actions= restart/1000
     "$env:USERPROFILE\Desktop\Prometheus.url",
     @"
 [InternetShortcut]
-URL=http://localhost:9090
+URL=https://prometheus.example.com
 "@)
 [IO.File]::WriteAllText(
     "$env:USERPROFILE\Desktop\wmi exporter.url",

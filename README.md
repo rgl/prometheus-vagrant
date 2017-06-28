@@ -14,7 +14,7 @@ Logon at the Windows console.
 
 Prometheus is available at:
 
-  [http://localhost:9090](http://localhost:9090)
+  [https://prometheus.example.com](https://prometheus.example.com)
 
 [wmi_exporter](https://github.com/martinlindhe/wmi_exporter) is available at:
 
