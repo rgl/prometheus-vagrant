@@ -22,6 +22,6 @@ Prometheus is available at:
 
 Grafana is available at:
 
-  [http://localhost:3000](http://localhost:3000)
+  [https://grafana.example.com](https://grafana.example.com)
 
 **NB** Login as `admin` and password `admin`.

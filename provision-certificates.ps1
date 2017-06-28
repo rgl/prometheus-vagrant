@@ -107,3 +107,4 @@ Import-Certificate `
     | Out-Null
 
 New-ServerCertificate 'prometheus.example.com'
+New-ServerCertificate 'grafana.example.com'

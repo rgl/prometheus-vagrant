@@ -8,36 +8,43 @@ $grafanaServiceCredential = New-Object PSCredential $grafanaServiceUsername,(Con
 Install-User -Credential $grafanaServiceCredential
 Grant-Privilege $grafanaServiceUsername SeServiceLogonRight
 
-# create the grafana home.
-mkdir $grafanaHome | Out-Null
-Disable-AclInheritance $grafanaHome
-Grant-Permission $grafanaHome SYSTEM FullControl
-Grant-Permission $grafanaHome Administrators FullControl
-Grant-Permission $grafanaHome $grafanaServiceUsername FullControl
-
 # download and install grafana.
 $archiveUrl = 'https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana-4.3.2.windows-x64.zip'
 $archiveHash = 'cee19ec4db8f0546c75d65b2fbe460587e8eb9539f9ffdb4baf9daefd7df706c'
 $archiveName = Split-Path $archiveUrl -Leaf
 $archivePath = "$env:TEMP\$archiveName"
+Write-Host 'Downloading Grafana...'
 Invoke-WebRequest $archiveUrl -UseBasicParsing -OutFile $archivePath
 $archiveActualHash = (Get-FileHash $archivePath -Algorithm SHA256).Hash
 if ($archiveHash -ne $archiveActualHash) {
     throw "$archiveName downloaded from $archiveUrl to $archivePath has $archiveActualHash hash witch does not match the expected $archiveHash"
 }
+Write-Host 'Installing Grafana...'
+mkdir $grafanaHome | Out-Null
 Expand-Archive $archivePath -DestinationPath $grafanaHome
 $grafanaArchiveTempPath = Resolve-Path $grafanaHome\grafana-*
 Move-Item $grafanaArchiveTempPath\* $grafanaHome
 Remove-Item $grafanaArchiveTempPath
 Remove-Item $archivePath
-mkdir $grafanaHome/data
+'logs','data' | ForEach-Object {
+    mkdir $grafanaHome/$_ | Out-Null
+    Disable-AclInheritance $grafanaHome/$_
+    Grant-Permission $grafanaHome/$_ Administrators FullControl
+    Grant-Permission $grafanaHome/$_ $grafanaServiceUsername FullControl
+}
+Disable-AclInheritance $grafanaHome/conf
+Grant-Permission $grafanaHome/conf Administrators FullControl
+Grant-Permission $grafanaHome/conf $grafanaServiceUsername Read
+Copy-Item c:/vagrant/shared/prometheus-example-ca/grafana.example.com-crt.pem $grafanaHome/conf
+Copy-Item c:/vagrant/shared/prometheus-example-ca/grafana.example.com-key.pem $grafanaHome/conf
 Copy-Item c:/vagrant/grafana.ini $grafanaHome/conf
 
 # create and start the windows service.
-mkdir $grafanaHome\logs | Out-Null
+Write-Host "Creating the $grafanaServiceName service..."
 nssm install $grafanaServiceName $grafanaHome\bin\grafana-server.exe
 nssm set $grafanaServiceName AppParameters `
-    "--config=$grafanaHome/conf/grafana.ini" `
+    "--config=$grafanaHome/conf/grafana.ini"
+nssm set $grafanaServiceName AppDirectory $grafanaHome
 sc.exe failure $grafanaServiceName reset= 0 actions= restart/1000
 nssm set $grafanaServiceName ObjectName $grafanaServiceUsername $grafanaServicePassword
 nssm set $grafanaServiceName Start SERVICE_AUTO_START
@@ -49,7 +56,7 @@ nssm set $grafanaServiceName AppStdout $grafanaHome\logs\service.log
 nssm set $grafanaServiceName AppStderr $grafanaHome\logs\service.log
 Start-Service $grafanaServiceName
 
-$apiBaseUrl = 'http://localhost:3000/api'
+$apiBaseUrl = 'https://grafana.example.com/api'
 $apiAuthorizationHeader = "Basic $([Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes('admin:admin')))"
 
 function Invoke-GrafanaApi($relativeUrl, $body, $method='Post') {
@@ -72,16 +79,18 @@ function New-GrafanaDashboard($body) {
 }
 
 # create a data source for the local prometheus server.
+Write-Host 'Creating the Prometheus Data Source...'
 New-GrafanaDataSource @{
     name = 'Prometheus'
     type = 'prometheus'
-    url = 'http://localhost:9090'
+    url = 'https://prometheus.example.com'
     access = 'direct'
     basicAuth = $false
 }
 
 # create a dashboard for the wmi_exporter.
 # NB this dashboard originaly came from https://grafana.com/dashboards/2129
+Write-Host 'Creating the Windows Dashboard...'
 $dashboard = (Get-Content -Raw grafana-windows-dashboard.json) `
     -replace '\${DS_PROMETHEUS}','Prometheus' `
     | ConvertFrom-Json
@@ -101,6 +110,6 @@ New-GrafanaDashboard @{
     "$env:USERPROFILE\Desktop\Grafana.url",
     @"
 [InternetShortcut]
-URL=http://localhost:3000
+URL=https://grafana.example.com
 "@)
 '@)

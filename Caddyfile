@@ -1,4 +1,5 @@
 https://prometheus.example.com {
+    bind prometheus.example.com
     tls tls/prometheus.example.com-crt.pem tls/prometheus.example.com-key.pem
     proxy / localhost:9090 {
         transparent
