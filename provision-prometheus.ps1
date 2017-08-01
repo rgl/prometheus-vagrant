@@ -15,17 +15,19 @@ mkdir $prometheusHome | Out-Null
 Disable-AclInheritance $prometheusHome
 Grant-Permission $prometheusHome SYSTEM FullControl
 Grant-Permission $prometheusHome Administrators FullControl
-Grant-Permission $prometheusHome $prometheusServiceUsername FullControl
+Grant-Permission $prometheusHome $prometheusServiceUsername Read
 Copy-Item c:/vagrant/prometheus.yml $prometheusHome
 mkdir $prometheusHome/tls | Out-Null
-Disable-AclInheritance $prometheusHome/tls
-Grant-Permission $prometheusHome/tls Administrators FullControl
-Grant-Permission $prometheusHome/tls $prometheusServiceUsername Read
 Copy-Item c:/vagrant/shared/prometheus-example-ca/prometheus.example.com-client-crt.pem $prometheusHome/tls
 Copy-Item c:/vagrant/shared/prometheus-example-ca/prometheus.example.com-client-key.pem $prometheusHome/tls
 Copy-Item c:/vagrant/shared/prometheus-example-ca/prometheus-example-ca-crt.pem $prometheusHome/tls
-mkdir $prometheusHome/data | Out-Null
-mkdir $prometheusHome/logs | Out-Null
+'data','logs' | ForEach-Object {
+    mkdir $prometheusHome/$_ | Out-Null
+    Disable-AclInheritance $prometheusHome/$_
+    Grant-Permission $prometheusHome/$_ SYSTEM FullControl
+    Grant-Permission $prometheusHome/$_ Administrators FullControl
+    Grant-Permission $prometheusHome/$_ $prometheusServiceUsername FullControl
+}
 sc.exe failure $prometheusServiceName reset= 0 actions= restart/1000
 nssm set $prometheusServiceName ObjectName $prometheusServiceUsername $prometheusServicePassword
 nssm set $prometheusServiceName Start SERVICE_AUTO_START
