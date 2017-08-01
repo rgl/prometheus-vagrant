@@ -1,13 +1,29 @@
 choco install -y openssl.light
 
+# update this session environment variables with the changes made by
+# the recently installed Chocolatey packages.
+Import-Module C:\ProgramData\chocolatey\helpers\chocolateyInstaller.psm1
+Update-SessionEnvironment
+
 $caDirectory = "c:\vagrant\shared\prometheus-example-ca"
 $caPathPrefix = "$caDirectory\prometheus-example-ca"
 $caCommonName = 'Prometheus Example CA'
 
 function openssl {
-    &'C:\Program Files\OpenSSL\bin\openssl.exe' @Args 2>$null | Out-String -Stream
-    if ($LASTEXITCODE) {
-        throw "$(@('openssl')+$Args | ConvertTo-Json -Compress) failed with exit code $LASTEXITCODE"
+    # openssl uses stderr to write error and progress messages, but
+    # when $ErrorActionPreference is 'Stop' and something is written
+    # to stderr PowerShell assumes that the application had a problem
+    # and aborts the application and this script, so we have to
+    # temporaly ignore that PowerShell behaviour.
+    $arguments = $Args
+    &{
+        $ErrorActionPreference = 'Continue'
+        $stderr = $($stdout = &'C:\Program Files\OpenSSL\bin\openssl.exe' @arguments) 2>&1
+        $ErrorActionPreference = 'Stop'
+        Write-Output $stdout
+        if ($LASTEXITCODE) {
+            throw "$(@('openssl')+$arguments | ConvertTo-Json -Compress) failed with exit code $LASTEXITCODE and stderr $stderr"
+        }
     }
 }
 
