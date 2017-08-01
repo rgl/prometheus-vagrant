@@ -74,6 +74,47 @@ keyUsage=critical,digitalSignature,keyCertSign,cRLSign
     openssl x509 -noout -text -in $caPathPrefix-crt.pem
 }
 
+function New-ClientCertificate($commonName) {
+    $certificatePrefix = "$caDirectory\$commonName-client"
+    if (Test-Path $certificatePrefix-crt.pem) {
+        return
+    }
+    openssl genrsa `
+        -out $certificatePrefix-key.pem `
+        2048
+    openssl req -new `
+        -sha256 `
+        -subj "/CN=$commonName" `
+        -key $certificatePrefix-key.pem `
+        -out $certificatePrefix-csr.pem
+    With-TemporaryFile {
+        param($extensionsPath)
+        Set-Content -Encoding Ascii -Path $extensionsPath -Value @'
+[a]
+extendedKeyUsage=critical,clientAuth
+'@
+        openssl x509 -req -sha256 `
+            -CA $caPathPrefix-crt.pem `
+            -CAkey $caPathPrefix-key.pem `
+            -CAcreateserial `
+            -extensions a `
+            -extfile $extensionsPath `
+            -days 365 `
+            -in $certificatePrefix-csr.pem `
+            -out $certificatePrefix-crt.pem
+    }
+    openssl pkcs12 -export `
+        -keyex `
+        -inkey $certificatePrefix-key.pem `
+        -in $certificatePrefix-crt.pem `
+        -certfile $certificatePrefix-crt.pem `
+        -passout pass: `
+        -out $certificatePrefix-key.p12
+    # dump the certificate contents (for logging purposes).
+    openssl x509 -noout -text -in $certificatePrefix-crt.pem
+    #openssl pkcs12 -info -nodes -passin pass: -in $certificatePrefix-key.p12
+}
+
 function New-ServerCertificate($domain, $ip=$null) {
     $certificatePrefix = "$caDirectory\$domain"
     if (Test-Path $certificatePrefix-crt.pem) {
@@ -121,6 +162,8 @@ Import-Certificate `
     -FilePath $caPathPrefix-crt.pem `
     -CertStoreLocation Cert:\LocalMachine\Root `
     | Out-Null
+
+New-ClientCertificate 'prometheus.example.com'
 
 New-ServerCertificate 'prometheus.example.com'
 New-ServerCertificate 'grafana.example.com'

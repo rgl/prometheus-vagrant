@@ -18,10 +18,17 @@ Prometheus is available at:
 
 [wmi_exporter](https://github.com/martinlindhe/wmi_exporter) is available at:
 
-  [http://localhost:9182](http://localhost:9182)
+  [https://prometheus.example.com:9182](https://prometheus.example.com:9182)
+
+**NB** It can only be accessed with a client certificate.
 
 Grafana is available at:
 
   [https://grafana.example.com](https://grafana.example.com)
 
 **NB** Login as `admin` and password `admin`.
+
+
+# Reference
+
+* [Exporters and their default port allocations](https://github.com/prometheus/prometheus/wiki/Default-port-allocations)

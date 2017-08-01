@@ -5,3 +5,14 @@ https://prometheus.example.com {
         transparent
     }
 }
+
+# wmi_exporter
+https://prometheus.example.com:9182 {
+    bind prometheus.example.com
+    tls tls/prometheus.example.com-crt.pem tls/prometheus.example.com-key.pem {
+        clients tls/prometheus-example-ca-crt.pem
+    }
+    proxy / localhost:9182 {
+        transparent
+    }
+}

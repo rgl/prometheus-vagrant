@@ -9,6 +9,11 @@ scrape_configs:
       - targets: 
         - localhost:9090
   - job_name: 'windows'
+    scheme: https
+    tls_config:
+      ca_file: tls/prometheus-example-ca-crt.pem
+      cert_file: tls/prometheus.example.com-client-crt.pem
+      key_file: tls/prometheus.example.com-client-key.pem
     static_configs:
       - targets:
-        - localhost:9182
+        - prometheus.example.com:9182

@@ -17,6 +17,13 @@ Grant-Permission $prometheusHome SYSTEM FullControl
 Grant-Permission $prometheusHome Administrators FullControl
 Grant-Permission $prometheusHome $prometheusServiceUsername FullControl
 Copy-Item c:/vagrant/prometheus.yml $prometheusHome
+mkdir $prometheusHome/tls | Out-Null
+Disable-AclInheritance $prometheusHome/tls
+Grant-Permission $prometheusHome/tls Administrators FullControl
+Grant-Permission $prometheusHome/tls $prometheusServiceUsername Read
+Copy-Item c:/vagrant/shared/prometheus-example-ca/prometheus.example.com-client-crt.pem $prometheusHome/tls
+Copy-Item c:/vagrant/shared/prometheus-example-ca/prometheus.example.com-client-key.pem $prometheusHome/tls
+Copy-Item c:/vagrant/shared/prometheus-example-ca/prometheus-example-ca-crt.pem $prometheusHome/tls
 mkdir $prometheusHome/data | Out-Null
 mkdir $prometheusHome/logs | Out-Null
 sc.exe failure $prometheusServiceName reset= 0 actions= restart/1000
@@ -36,10 +43,6 @@ nssm set $prometheusServiceName AppParameters `
     "-web.console.templates=$prometheusInstallHome/consoles"
 Start-Service $prometheusServiceName
 
-# install the wmi-exporter.
-choco install -y prometheus-wmi-exporter.install
-sc.exe failure wmi_exporter reset= 0 actions= restart/1000
-
 # add default desktop shortcuts (called from a provision-base.ps1 generated script).
 [IO.File]::WriteAllText(
     "$env:USERPROFILE\ConfigureDesktop-Prometheus.ps1",
@@ -50,10 +53,3 @@ sc.exe failure wmi_exporter reset= 0 actions= restart/1000
 [InternetShortcut]
 URL=https://prometheus.example.com
 "@)
-[IO.File]::WriteAllText(
-    "$env:USERPROFILE\Desktop\wmi exporter.url",
-    @"
-[InternetShortcut]
-URL=http://localhost:9182
-"@)
-'@)
