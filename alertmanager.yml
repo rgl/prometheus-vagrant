@@ -1,0 +1,20 @@
+# see https://prometheus.io/docs/alerting/configuration/
+global:
+  smtp_smarthost: 'localhost:1025'
+  smtp_from: 'alertmanager@example.com'
+  smtp_require_tls: false
+
+route:
+  receiver: team-X-mail
+  routes:
+    - match:
+        severity: critical
+      receiver: team-X-pager
+
+receivers:
+  - name: 'team-X-mail'
+    email_configs:
+    - to: 'team-X+mail@example.com'
+  - name: 'team-X-pager'
+    email_configs:
+    - to: 'team-X+pager@example.com'

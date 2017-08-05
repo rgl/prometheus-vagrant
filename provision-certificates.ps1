@@ -166,4 +166,5 @@ Import-Certificate `
 New-ClientCertificate 'prometheus.example.com'
 
 New-ServerCertificate 'prometheus.example.com'
+New-ServerCertificate 'alertmanager.example.com'
 New-ServerCertificate 'grafana.example.com'

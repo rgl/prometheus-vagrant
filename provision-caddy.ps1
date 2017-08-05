@@ -31,9 +31,11 @@ mkdir $caddyHome/tls | Out-Null
 Disable-AclInheritance $caddyHome/tls
 Grant-Permission $caddyHome/tls Administrators FullControl
 Grant-Permission $caddyHome/tls $caddyServiceUsername Read
+Copy-Item c:/vagrant/shared/prometheus-example-ca/prometheus-example-ca-crt.pem $caddyHome/tls
 Copy-Item c:/vagrant/shared/prometheus-example-ca/prometheus.example.com-crt.pem $caddyHome/tls
 Copy-Item c:/vagrant/shared/prometheus-example-ca/prometheus.example.com-key.pem $caddyHome/tls
-Copy-Item c:/vagrant/shared/prometheus-example-ca/prometheus-example-ca-crt.pem $caddyHome/tls
+Copy-Item c:/vagrant/shared/prometheus-example-ca/alertmanager.example.com-crt.pem $caddyHome/tls
+Copy-Item c:/vagrant/shared/prometheus-example-ca/alertmanager.example.com-key.pem $caddyHome/tls
 nssm install $caddyServiceName $caddyHome/caddy.exe
 sc.exe failure $caddyServiceName reset= 0 actions= restart/1000
 nssm set $caddyServiceName ObjectName $caddyServiceUsername $caddyServicePassword

@@ -16,3 +16,11 @@ https://prometheus.example.com:9182 {
         transparent
     }
 }
+
+https://alertmanager.example.com {
+    bind alertmanager.example.com
+    tls tls/alertmanager.example.com-crt.pem tls/alertmanager.example.com-key.pem
+    proxy / localhost:9093 {
+        transparent
+    }
+}

@@ -1,5 +1,6 @@
 hosts = '''
 10.10.10.100 prometheus.example.com
+10.10.10.100 alertmanager.example.com
 10.10.10.101 grafana.example.com
 '''
 
@@ -20,6 +21,8 @@ Vagrant.configure('2') do |config|
     config.vm.provision :shell, inline: "echo '#{hosts}' | Out-File -Encoding Ascii -Append c:/Windows/System32/drivers/etc/hosts"
     config.vm.provision :shell, path: 'ps.ps1', args: 'provision-common.ps1'
     config.vm.provision :shell, path: 'ps.ps1', args: 'provision-certificates.ps1'
+    config.vm.provision :shell, path: 'ps.ps1', args: 'provision-mailhog.ps1'
+    config.vm.provision :shell, path: 'ps.ps1', args: 'provision-alertmanager.ps1'
     config.vm.provision :shell, path: 'ps.ps1', args: 'provision-wmi-exporter.ps1'
     config.vm.provision :shell, path: 'ps.ps1', args: 'provision-prometheus.ps1'
     config.vm.provision :shell, path: 'ps.ps1', args: 'provision-caddy.ps1'

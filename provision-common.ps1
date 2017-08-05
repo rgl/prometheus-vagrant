@@ -167,3 +167,6 @@ New-Item -Force -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image 
     | Set-ItemProperty `
         -Name Debugger `
         -Value '"C:\Program Files\ApplicationReplacer\ApplicationReplacer.exe" -- "C:\Program Files\Notepad++\notepad++.exe"'
+
+# nssm is used to run applications (e.g. grafana) as windows services.
+choco install -y nssm

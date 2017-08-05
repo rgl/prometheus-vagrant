@@ -17,6 +17,7 @@ Grant-Permission $prometheusHome SYSTEM FullControl
 Grant-Permission $prometheusHome Administrators FullControl
 Grant-Permission $prometheusHome $prometheusServiceUsername Read
 Copy-Item c:/vagrant/prometheus.yml $prometheusHome
+Copy-Item c:/vagrant/*.rules $prometheusHome
 mkdir $prometheusHome/tls | Out-Null
 Copy-Item c:/vagrant/shared/prometheus-example-ca/prometheus.example.com-client-crt.pem $prometheusHome/tls
 Copy-Item c:/vagrant/shared/prometheus-example-ca/prometheus.example.com-client-key.pem $prometheusHome/tls
@@ -39,10 +40,13 @@ nssm set $prometheusServiceName AppStdout $prometheusHome\logs\service.log
 nssm set $prometheusServiceName AppStderr $prometheusHome\logs\service.log
 nssm set $prometheusServiceName AppParameters `
     "-config.file=$prometheusHome/prometheus.yml" `
-    '-web.listen-address=localhost:9090' `
     "-storage.local.path=$prometheusHome/data" `
+    "-storage.local.retention=$(7*24)h" `
     "-web.console.libraries=$prometheusInstallHome/console_libraries" `
-    "-web.console.templates=$prometheusInstallHome/consoles"
+    "-web.console.templates=$prometheusInstallHome/consoles" `
+    '-web.listen-address=localhost:9090' `
+    '-web.external-url=https://prometheus.example.com' `
+    '-alertmanager.url=http://localhost:9093'
 Start-Service $prometheusServiceName
 
 # add default desktop shortcuts (called from a provision-base.ps1 generated script).
@@ -55,3 +59,4 @@ Start-Service $prometheusServiceName
 [InternetShortcut]
 URL=https://prometheus.example.com
 "@)
+'@)
