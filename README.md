@@ -28,6 +28,12 @@ Prometheus is available at:
 
 **NB** It can only be accessed with a client certificate.
 
+[blackbox_exporter](https://github.com/prometheus/blackbox_exporter) is available at:
+
+  [https://prometheus.example.com:9115](https://prometheus.example.com:9115)
+
+**NB** It can only be accessed with a client certificate.
+
 Grafana is available at:
 
   [https://grafana.example.com](https://grafana.example.com)

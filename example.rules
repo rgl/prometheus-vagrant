@@ -15,3 +15,11 @@ ALERT HighSystemVolumeUsage
     SUMMARY = "Instance {{$labels.instance}} with high disk usage on the system volume",
     DESCRIPTION = "{{$labels.instance}} of job {{$labels.job}} has high disk usage (above 75% (current value is {{$value}})) on the system volume for more than 5 minutes."
   }
+
+ALERT ProbeFailing
+  IF probe_success == 0
+  FOR 5m
+  ANNOTATIONS {
+    SUMMARY = "Instance {{$labels.instance}} probe is failing",
+    DESCRIPTION = "{{$labels.instance}} of job {{$labels.job}} is failing for more than 5 minutes."
+  }
