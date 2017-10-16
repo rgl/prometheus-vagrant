@@ -9,7 +9,7 @@ Install-User -Credential $prometheusServiceCredential
 Grant-Privilege $prometheusServiceUsername SeServiceLogonRight
 
 # install prometheus.
-choco install -y prometheus
+choco install -y prometheus -Version 1.8.0
 $prometheusInstallHome = Split-Path -Parent -Resolve C:\ProgramData\chocolatey\lib\prometheus\tools\prometheus-*\prometheus.exe
 mkdir $prometheusHome | Out-Null
 Disable-AclInheritance $prometheusHome
