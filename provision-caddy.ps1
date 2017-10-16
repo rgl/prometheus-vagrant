@@ -11,8 +11,8 @@ Grant-Privilege $caddyServiceUsername SeServiceLogonRight
 # install caddy for exposing the prometheus server at an https endpoint.
 # NB The Prometheus server itself does not support HTTPS or Authentication.
 #    see https://prometheus.io/docs/introduction/faq/#why-don-t-the-prometheus-server-components-support-tls-or-authentication-can-i-add-those
-$archiveUrl = 'https://github.com/mholt/caddy/releases/download/v0.10.4/caddy_v0.10.4_windows_amd64.zip'
-$archiveHash = '195c89443037c4906a3628c1c25291261e148e6ec2d017832b77f6a3ddf8a74f'
+$archiveUrl = 'https://github.com/mholt/caddy/releases/download/v0.10.10/caddy_v0.10.10_windows_amd64.zip'
+$archiveHash = '728f9eb905b6e0c506bd603e130eca1f40e1fa90182f187e6572a688de7d6924'
 $archiveName = Split-Path $archiveUrl -Leaf
 $archivePath = "$env:TEMP\$archiveName"
 Invoke-WebRequest $archiveUrl -UseBasicParsing -OutFile $archivePath
