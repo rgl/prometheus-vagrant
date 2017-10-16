@@ -9,8 +9,8 @@ Install-User -Credential $alertmanagerServiceCredential
 Grant-Privilege $alertmanagerServiceUsername SeServiceLogonRight
 
 # download and install alertmanager.
-$archiveUrl = 'https://github.com/prometheus/alertmanager/releases/download/v0.8.0/alertmanager-0.8.0.windows-amd64.tar.gz'
-$archiveHash = 'b4c8ca956ff7e3dad20ae890a49012fba4c7297a38d4ab2c725fadc9410c9a1f'
+$archiveUrl = 'https://github.com/prometheus/alertmanager/releases/download/v0.9.1/alertmanager-0.9.1.windows-amd64.tar.gz'
+$archiveHash = 'f0e36e2bfd703a91df6e1c6b01fce3b8f666be4eaf3b3d5b05ce263bf086e2c5'
 $archiveName = Split-Path $archiveUrl -Leaf
 $archiveTarName = $archiveName -replace '\.gz',''
 $archivePath = "$env:TEMP\$archiveName"
