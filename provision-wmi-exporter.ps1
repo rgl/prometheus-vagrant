@@ -1,5 +1,5 @@
 # install the wmi-exporter.
-choco install -y prometheus-wmi-exporter.install `
+choco install -y prometheus-wmi-exporter.install -Version 0.2.7 `
     --params '"/ListenAddress:127.0.0.1 /ListenPort:9182"'
 sc.exe failure wmi_exporter reset= 0 actions= restart/1000
 
