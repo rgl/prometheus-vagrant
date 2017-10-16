@@ -9,12 +9,14 @@ Install-User -Credential $serviceCredential
 Grant-Privilege $serviceUsername SeServiceLogonRight
 
 # install the blackbox-exporter.
-choco install -y prometheus-blackbox-exporter
+choco install -y prometheus-blackbox-exporter -Version 0.10.0
 mkdir $serviceHome | Out-Null
 Disable-AclInheritance $serviceHome
 Grant-Permission $serviceHome SYSTEM FullControl
 Grant-Permission $serviceHome Administrators FullControl
 Grant-Permission $serviceHome $serviceUsername Read
+mkdir $serviceHome/conf | Out-Null
+Copy-Item c:/vagrant/blackbox.yml $serviceHome/conf
 mkdir $serviceHome/logs | Out-Null
 Disable-AclInheritance $serviceHome/logs
 Grant-Permission $serviceHome/logs SYSTEM FullControl
@@ -30,7 +32,8 @@ nssm set $serviceName AppRotateBytes 1048576
 nssm set $serviceName AppStdout $serviceHome\logs\service.log
 nssm set $serviceName AppStderr $serviceHome\logs\service.log
 nssm set $serviceName AppParameters `
-    '-web.listen-address=localhost:9115'
+    '--web.listen-address=localhost:9115' `
+    "--config.file=$serviceHome/conf/blackbox.yml"
 Start-Service $serviceName
 
 # give it a try.
