@@ -9,8 +9,8 @@ Install-User -Credential $grafanaServiceCredential
 Grant-Privilege $grafanaServiceUsername SeServiceLogonRight
 
 # download and install grafana.
-$archiveUrl = 'https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana-4.4.1.windows-x64.zip'
-$archiveHash = '978919209c16d4da76f4f31d11c4f2ba1aaecdb893ca558f95ce070dd36270bf'
+$archiveUrl = 'https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana-4.5.2.windows-x64.zip'
+$archiveHash = 'e3ac7ba137daee1110d7a74b1bbcbc26082c76a9101d25a05da9837e91e1261a'
 $archiveName = Split-Path $archiveUrl -Leaf
 $archivePath = "$env:TEMP\$archiveName"
 Write-Host 'Downloading Grafana...'
