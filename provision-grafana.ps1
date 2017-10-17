@@ -1,12 +1,32 @@
 $grafanaHome = 'C:/grafana'
 $grafanaServiceName = 'grafana'
-$grafanaServiceUsername = '.\grafana'
-$grafanaServicePassword = 'HeyH0Password!'
-$grafanaServiceCredential = New-Object PSCredential $grafanaServiceUsername,(ConvertTo-SecureString $grafanaServicePassword -AsPlainText -Force)
+$grafanaServiceUsername = "NT SERVICE\$grafanaServiceName"
 
-# create the grafana local account.
-Install-User -Credential $grafanaServiceCredential
-Grant-Privilege $grafanaServiceUsername SeServiceLogonRight
+# create the windows service using a managed service account.
+Write-Host "Creating the $grafanaServiceName service..."
+nssm install $grafanaServiceName $grafanaHome\bin\grafana-server.exe
+nssm set $grafanaServiceName AppParameters `
+    "--config=$grafanaHome/conf/grafana.ini"
+nssm set $grafanaServiceName AppDirectory $grafanaHome
+nssm set $grafanaServiceName Start SERVICE_AUTO_START
+nssm set $grafanaServiceName AppRotateFiles 1
+nssm set $grafanaServiceName AppRotateOnline 1
+nssm set $grafanaServiceName AppRotateSeconds 86400
+nssm set $grafanaServiceName AppRotateBytes 1048576
+nssm set $grafanaServiceName AppStdout $grafanaHome\logs\service.log
+nssm set $grafanaServiceName AppStderr $grafanaHome\logs\service.log
+$result = sc.exe sidtype $grafanaServiceName unrestricted
+if ($result -ne '[SC] ChangeServiceConfig2 SUCCESS') {
+    throw "sc.exe sidtype failed with $result"
+}
+$result = sc.exe config $grafanaServiceName obj= $grafanaServiceUsername
+if ($result -ne '[SC] ChangeServiceConfig SUCCESS') {
+    throw "sc.exe config failed with $result"
+}
+$result = sc.exe failure $grafanaServiceName reset= 0 actions= restart/1000
+if ($result -ne '[SC] ChangeServiceConfig2 SUCCESS') {
+    throw "sc.exe failure failed with $result"
+}
 
 # download and install grafana.
 $archiveUrl = 'https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana-4.5.2.windows-x64.zip'
@@ -39,21 +59,7 @@ Copy-Item c:/vagrant/shared/prometheus-example-ca/grafana.example.com-crt.pem $g
 Copy-Item c:/vagrant/shared/prometheus-example-ca/grafana.example.com-key.pem $grafanaHome/conf
 Copy-Item c:/vagrant/grafana.ini $grafanaHome/conf
 
-# create and start the windows service.
-Write-Host "Creating the $grafanaServiceName service..."
-nssm install $grafanaServiceName $grafanaHome\bin\grafana-server.exe
-nssm set $grafanaServiceName AppParameters `
-    "--config=$grafanaHome/conf/grafana.ini"
-nssm set $grafanaServiceName AppDirectory $grafanaHome
-sc.exe failure $grafanaServiceName reset= 0 actions= restart/1000
-nssm set $grafanaServiceName ObjectName $grafanaServiceUsername $grafanaServicePassword
-nssm set $grafanaServiceName Start SERVICE_AUTO_START
-nssm set $grafanaServiceName AppRotateFiles 1
-nssm set $grafanaServiceName AppRotateOnline 1
-nssm set $grafanaServiceName AppRotateSeconds 86400
-nssm set $grafanaServiceName AppRotateBytes 1048576
-nssm set $grafanaServiceName AppStdout $grafanaHome\logs\service.log
-nssm set $grafanaServiceName AppStderr $grafanaHome\logs\service.log
+Write-Host "Starting the $grafanaServiceName service..."
 Start-Service $grafanaServiceName
 
 $apiBaseUrl = 'https://grafana.example.com/api'

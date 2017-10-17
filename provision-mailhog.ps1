@@ -1,19 +1,43 @@
 $mailhogHome = 'C:/mailhog'
+$mailHogPath = "$mailhogHome\MailHog.exe"
 $mailhogServiceName = 'mailhog'
-$mailhogServiceUsername = '.\mailhog'
-$mailhogServicePassword = 'HeyH0Password!'
-$mailhogServiceCredential = New-Object PSCredential $mailhogServiceUsername,(ConvertTo-SecureString $mailhogServicePassword -AsPlainText -Force)
+$mailhogServiceUsername = "NT SERVICE\$mailhogServiceName"
 
-# create the mailhog local account.
-Install-User -Credential $mailhogServiceCredential
-Grant-Privilege $mailhogServiceUsername SeServiceLogonRight
+# create the windows service using a managed service account.
+Write-Host "Creating the $mailhogServiceName service..."
+nssm install $mailhogServiceName $mailHogPath
+nssm set $mailhogServiceName AppParameters `
+    '-smtp-bind-addr=localhost:1025' `
+    '-api-bind-addr=localhost:8025' `
+    '-ui-bind-addr=localhost:8025' `
+    '-storage=maildir' `
+    "-maildir-path=$mailhogHome/data"
+nssm set $mailhogServiceName AppDirectory $mailhogHome
+nssm set $mailhogServiceName Start SERVICE_AUTO_START
+nssm set $mailhogServiceName AppRotateFiles 1
+nssm set $mailhogServiceName AppRotateOnline 1
+nssm set $mailhogServiceName AppRotateSeconds 86400
+nssm set $mailhogServiceName AppRotateBytes 1048576
+nssm set $mailhogServiceName AppStdout $mailhogHome\logs\service.log
+nssm set $mailhogServiceName AppStderr $mailhogHome\logs\service.log
+$result = sc.exe sidtype $mailhogServiceName unrestricted
+if ($result -ne '[SC] ChangeServiceConfig2 SUCCESS') {
+    throw "sc.exe sidtype failed with $result"
+}
+$result = sc.exe config $mailhogServiceName obj= $mailhogServiceUsername
+if ($result -ne '[SC] ChangeServiceConfig SUCCESS') {
+    throw "sc.exe config failed with $result"
+}
+$result = sc.exe failure $mailhogServiceName reset= 0 actions= restart/1000
+if ($result -ne '[SC] ChangeServiceConfig2 SUCCESS') {
+    throw "sc.exe failure failed with $result"
+}
 
 # download and install MailHog.
 $archiveUrl = 'https://github.com/mailhog/MailHog/releases/download/v1.0.0/MailHog_windows_amd64.exe'
 $archiveHash = '6db91b94b011a7586cb10cd52ca723088b207693ee56ac2aedb3c65d9052b8dd'
 $archiveName = Split-Path $archiveUrl -Leaf
 $archivePath = "$env:TEMP\$archiveName"
-$mailHogPath = "$mailhogHome\MailHog.exe"
 Write-Host 'Downloading MailHog...'
 Invoke-WebRequest $archiveUrl -UseBasicParsing -OutFile $archivePath
 $archiveActualHash = (Get-FileHash $archivePath -Algorithm SHA256).Hash
@@ -31,25 +55,7 @@ Remove-Item $archivePath
     Grant-Permission $mailhogHome/$_ $mailhogServiceUsername FullControl
 }
 
-# create and start the windows service.
-Write-Host "Creating the $mailhogServiceName service..."
-nssm install $mailhogServiceName $mailHogPath
-nssm set $mailhogServiceName AppParameters `
-    '-smtp-bind-addr=localhost:1025' `
-    '-api-bind-addr=localhost:8025' `
-    '-ui-bind-addr=localhost:8025' `
-    '-storage=maildir' `
-    "-maildir-path=$mailhogHome/data"
-nssm set $mailhogServiceName AppDirectory $mailhogHome
-sc.exe failure $mailhogServiceName reset= 0 actions= restart/1000
-nssm set $mailhogServiceName ObjectName $mailhogServiceUsername $mailhogServicePassword
-nssm set $mailhogServiceName Start SERVICE_AUTO_START
-nssm set $mailhogServiceName AppRotateFiles 1
-nssm set $mailhogServiceName AppRotateOnline 1
-nssm set $mailhogServiceName AppRotateSeconds 86400
-nssm set $mailhogServiceName AppRotateBytes 1048576
-nssm set $mailhogServiceName AppStdout $mailhogHome\logs\service.log
-nssm set $mailhogServiceName AppStderr $mailhogHome\logs\service.log
+Write-Host "Starting the $mailhogServiceName service..."
 Start-Service $mailhogServiceName
 
 # send a test email.

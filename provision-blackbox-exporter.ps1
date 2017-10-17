@@ -1,15 +1,36 @@
 $serviceHome = 'C:/blackbox-exporter'
 $serviceName = 'prometheus-blackbox-exporter'
-$serviceUsername = '.\blackbox-exporter'
-$servicePassword = 'HeyH0Password!'
-$serviceCredential = New-Object PSCredential $serviceUsername,(ConvertTo-SecureString $servicePassword -AsPlainText -Force)
+$serviceUsername = "NT SERVICE\$serviceName"
 
-# create the service local account.
-Install-User -Credential $serviceCredential
-Grant-Privilege $serviceUsername SeServiceLogonRight
+# install blackbox-exporter.
+choco install -y prometheus-blackbox-exporter --version 0.10.0
 
-# install the blackbox-exporter.
-choco install -y prometheus-blackbox-exporter -Version 0.10.0
+# configure the windows service to use a managed service account.
+Write-Host "Configuring the $serviceName service..."
+nssm set $serviceName Start SERVICE_AUTO_START
+nssm set $serviceName AppRotateFiles 1
+nssm set $serviceName AppRotateOnline 1
+nssm set $serviceName AppRotateSeconds 86400
+nssm set $serviceName AppRotateBytes 1048576
+nssm set $serviceName AppStdout $serviceHome\logs\service.log
+nssm set $serviceName AppStderr $serviceHome\logs\service.log
+nssm set $serviceName AppParameters `
+    '--web.listen-address=localhost:9115' `
+    "--config.file=$serviceHome/conf/blackbox.yml"
+$result = sc.exe sidtype $serviceName unrestricted
+if ($result -ne '[SC] ChangeServiceConfig2 SUCCESS') {
+    throw "sc.exe sidtype failed with $result"
+}
+$result = sc.exe config $serviceName obj= $serviceUsername
+if ($result -ne '[SC] ChangeServiceConfig SUCCESS') {
+    throw "sc.exe config failed with $result"
+}
+$result = sc.exe failure $serviceName reset= 0 actions= restart/1000
+if ($result -ne '[SC] ChangeServiceConfig2 SUCCESS') {
+    throw "sc.exe failure failed with $result"
+}
+
+# configure the blackbox-exporter service.
 mkdir $serviceHome | Out-Null
 Disable-AclInheritance $serviceHome
 Grant-Permission $serviceHome SYSTEM FullControl
@@ -22,18 +43,8 @@ Disable-AclInheritance $serviceHome/logs
 Grant-Permission $serviceHome/logs SYSTEM FullControl
 Grant-Permission $serviceHome/logs Administrators FullControl
 Grant-Permission $serviceHome/logs $serviceUsername FullControl
-sc.exe failure $serviceName reset= 0 actions= restart/1000
-nssm set $serviceName ObjectName $serviceUsername $servicePassword
-nssm set $serviceName Start SERVICE_AUTO_START
-nssm set $serviceName AppRotateFiles 1
-nssm set $serviceName AppRotateOnline 1
-nssm set $serviceName AppRotateSeconds 86400
-nssm set $serviceName AppRotateBytes 1048576
-nssm set $serviceName AppStdout $serviceHome\logs\service.log
-nssm set $serviceName AppStderr $serviceHome\logs\service.log
-nssm set $serviceName AppParameters `
-    '--web.listen-address=localhost:9115' `
-    "--config.file=$serviceHome/conf/blackbox.yml"
+
+Write-Host "Starting the $serviceUsername service..."
 Start-Service $serviceName
 
 # give it a try.

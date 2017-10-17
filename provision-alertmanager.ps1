@@ -1,12 +1,36 @@
 $alertmanagerHome = 'C:/alertmanager'
 $alertmanagerServiceName = 'alertmanager'
-$alertmanagerServiceUsername = '.\alertmanager'
-$alertmanagerServicePassword = 'HeyH0Password!'
-$alertmanagerServiceCredential = New-Object PSCredential $alertmanagerServiceUsername,(ConvertTo-SecureString $alertmanagerServicePassword -AsPlainText -Force)
+$alertmanagerServiceUsername = "NT SERVICE\$alertmanagerServiceName"
 
-# create the alertmanager local account.
-Install-User -Credential $alertmanagerServiceCredential
-Grant-Privilege $alertmanagerServiceUsername SeServiceLogonRight
+# create the windows service using a managed service account.
+Write-Host "Creating the $alertmanagerServiceName service..."
+nssm install $alertmanagerServiceName $alertmanagerHome\alertmanager.exe
+nssm set $alertmanagerServiceName AppParameters `
+    '-web.listen-address=localhost:9093' `
+    '-web.external-url=https://alertmanager.example.com' `
+    "-config.file=$alertmanagerHome/conf/alertmanager.yml" `
+    "-storage.path=$alertmanagerHome/data" `
+    "-data.retention=$(7*24)h"
+nssm set $alertmanagerServiceName AppDirectory $alertmanagerHome
+nssm set $alertmanagerServiceName Start SERVICE_AUTO_START
+nssm set $alertmanagerServiceName AppRotateFiles 1
+nssm set $alertmanagerServiceName AppRotateOnline 1
+nssm set $alertmanagerServiceName AppRotateSeconds 86400
+nssm set $alertmanagerServiceName AppRotateBytes 1048576
+nssm set $alertmanagerServiceName AppStdout $alertmanagerHome\logs\service.log
+nssm set $alertmanagerServiceName AppStderr $alertmanagerHome\logs\service.log
+$result = sc.exe sidtype $alertmanagerServiceName unrestricted
+if ($result -ne '[SC] ChangeServiceConfig2 SUCCESS') {
+    throw "sc.exe sidtype failed with $result"
+}
+$result = sc.exe config $alertmanagerServiceName obj= $alertmanagerServiceUsername
+if ($result -ne '[SC] ChangeServiceConfig SUCCESS') {
+    throw "sc.exe config failed with $result"
+}
+$result = sc.exe failure $alertmanagerServiceName reset= 0 actions= restart/1000
+if ($result -ne '[SC] ChangeServiceConfig2 SUCCESS') {
+    throw "sc.exe failure failed with $result"
+}
 
 # download and install alertmanager.
 $archiveUrl = 'https://github.com/prometheus/alertmanager/releases/download/v0.9.1/alertmanager-0.9.1.windows-amd64.tar.gz'
@@ -42,25 +66,7 @@ Grant-Permission $alertmanagerHome/conf Administrators FullControl
 Grant-Permission $alertmanagerHome/conf $alertmanagerServiceUsername Read
 Copy-Item c:/vagrant/alertmanager.yml $alertmanagerHome/conf
 
-# create and start the windows service.
-Write-Host "Creating the $alertmanagerServiceName service..."
-nssm install $alertmanagerServiceName $alertmanagerHome\alertmanager.exe
-nssm set $alertmanagerServiceName AppParameters `
-    '-web.listen-address=localhost:9093' `
-    '-web.external-url=https://alertmanager.example.com' `
-    "-config.file=$alertmanagerHome/conf/alertmanager.yml" `
-    "-storage.path=$alertmanagerHome/data" `
-    "-data.retention=$(7*24)h"
-nssm set $alertmanagerServiceName AppDirectory $alertmanagerHome
-sc.exe failure $alertmanagerServiceName reset= 0 actions= restart/1000
-nssm set $alertmanagerServiceName ObjectName $alertmanagerServiceUsername $alertmanagerServicePassword
-nssm set $alertmanagerServiceName Start SERVICE_AUTO_START
-nssm set $alertmanagerServiceName AppRotateFiles 1
-nssm set $alertmanagerServiceName AppRotateOnline 1
-nssm set $alertmanagerServiceName AppRotateSeconds 86400
-nssm set $alertmanagerServiceName AppRotateBytes 1048576
-nssm set $alertmanagerServiceName AppStdout $alertmanagerHome\logs\service.log
-nssm set $alertmanagerServiceName AppStderr $alertmanagerHome\logs\service.log
+Write-Host "Starting the $alertmanagerServiceName service..."
 Start-Service $alertmanagerServiceName
 
 # add default desktop shortcuts (called from a provision-base.ps1 generated script).
