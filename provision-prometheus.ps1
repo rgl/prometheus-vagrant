@@ -2,13 +2,34 @@ $prometheusHome = 'C:/prometheus'
 $prometheusServiceName = 'prometheus-service' # NB you cannot change this. its hard-coded in the prometheus chocolatey package.
 $prometheusServiceUsername = "NT SERVICE\$prometheusServiceName"
 
-# install prometheus.
-choco install -y prometheus --version 1.8.0
+# download and install prometheus.
+$archiveUrl = 'https://github.com/prometheus/prometheus/releases/download/v2.0.0-rc.2/prometheus-2.0.0-rc.2.windows-amd64.tar.gz'
+$archiveHash = '94310185f7244096826c2cc04b2105a2f9a3344e5f3d2a0f3b53106ee3f0ca67'
+$archiveName = Split-Path $archiveUrl -Leaf
+$archiveTarName = $archiveName -replace '\.gz',''
+$archivePath = "$env:TEMP\$archiveName"
+Write-Host 'Downloading Prometheus...'
+Invoke-WebRequest $archiveUrl -UseBasicParsing -OutFile $archivePath
+$archiveActualHash = (Get-FileHash $archivePath -Algorithm SHA256).Hash
+if ($archiveHash -ne $archiveActualHash) {
+    throw "$archiveName downloaded from $archiveUrl to $archivePath has $archiveActualHash hash witch does not match the expected $archiveHash"
+}
+Write-Host 'Installing Prometheus...'
+mkdir $prometheusHome | Out-Null
+Import-Module C:\ProgramData\chocolatey\helpers\chocolateyInstaller.psm1
+Get-ChocolateyUnzip -FileFullPath $archivePath -Destination $prometheusHome
+Get-ChocolateyUnzip -FileFullPath $prometheusHome\$archiveTarName -Destination $prometheusHome
+Remove-Item $prometheusHome\$archiveTarName
+$prometheusArchiveTempPath = Resolve-Path $prometheusHome\prometheus-*
+Move-Item $prometheusArchiveTempPath\* $prometheusHome
+Remove-Item $prometheusArchiveTempPath
+Remove-Item $archivePath
 
-$prometheusInstallHome = Split-Path -Parent -Resolve C:\ProgramData\chocolatey\lib\prometheus\tools\prometheus-*\prometheus.exe
+$prometheusInstallHome = $prometheusHome
 
 # configure the windows service using a managed service account.
 Write-Host "Configuring the $prometheusServiceName service..."
+nssm install $prometheusServiceName $prometheusInstallHome\prometheus.exe
 nssm set $prometheusServiceName Start SERVICE_AUTO_START
 nssm set $prometheusServiceName AppRotateFiles 1
 nssm set $prometheusServiceName AppRotateOnline 1
@@ -16,15 +37,15 @@ nssm set $prometheusServiceName AppRotateSeconds 86400
 nssm set $prometheusServiceName AppRotateBytes 1048576
 nssm set $prometheusServiceName AppStdout $prometheusHome\logs\service.log
 nssm set $prometheusServiceName AppStderr $prometheusHome\logs\service.log
+nssm set $prometheusServiceName AppDirectory $prometheusInstallHome
 nssm set $prometheusServiceName AppParameters `
-    "-config.file=$prometheusHome/prometheus.yml" `
-    "-storage.local.path=$prometheusHome/data" `
-    "-storage.local.retention=$(7*24)h" `
-    "-web.console.libraries=$prometheusInstallHome/console_libraries" `
-    "-web.console.templates=$prometheusInstallHome/consoles" `
-    '-web.listen-address=localhost:9090' `
-    '-web.external-url=https://prometheus.example.com' `
-    '-alertmanager.url=http://localhost:9093'
+    "--config.file=$prometheusHome/prometheus.yml" `
+    "--storage.tsdb.path=$prometheusHome/data" `
+    "--storage.tsdb.retention=$(7*24)h" `
+    "--web.console.libraries=$prometheusInstallHome/console_libraries" `
+    "--web.console.templates=$prometheusInstallHome/consoles" `
+    '--web.listen-address=localhost:9090' `
+    '--web.external-url=https://prometheus.example.com'
 $result = sc.exe sidtype $prometheusServiceName unrestricted
 if ($result -ne '[SC] ChangeServiceConfig2 SUCCESS') {
     throw "sc.exe sidtype failed with $result"
@@ -38,13 +59,12 @@ if ($result -ne '[SC] ChangeServiceConfig2 SUCCESS') {
     throw "sc.exe failure failed with $result"
 }
 
-mkdir $prometheusHome | Out-Null
 Disable-AclInheritance $prometheusHome
 Grant-Permission $prometheusHome SYSTEM FullControl
 Grant-Permission $prometheusHome Administrators FullControl
-Grant-Permission $prometheusHome $prometheusServiceUsername Read
+Grant-Permission $prometheusHome $prometheusServiceUsername ReadAndExecute
 Copy-Item c:/vagrant/prometheus.yml $prometheusHome
-Copy-Item c:/vagrant/*.rules $prometheusHome
+Copy-Item c:/vagrant/*-rules.yml $prometheusHome
 mkdir $prometheusHome/tls | Out-Null
 Copy-Item c:/vagrant/shared/prometheus-example-ca/prometheus.example.com-client-crt.pem $prometheusHome/tls
 Copy-Item c:/vagrant/shared/prometheus-example-ca/prometheus.example.com-client-key.pem $prometheusHome/tls
@@ -56,6 +76,9 @@ Copy-Item c:/vagrant/shared/prometheus-example-ca/prometheus-example-ca-crt.pem 
     Grant-Permission $prometheusHome/$_ Administrators FullControl
     Grant-Permission $prometheusHome/$_ $prometheusServiceUsername FullControl
 }
+
+Write-Host "Checking the prometheus configuration..."
+&"$prometheusInstallHome\promtool.exe" check config $prometheusHome/prometheus.yml
 
 Write-Host "Starting the $prometheusServiceName service..."
 Start-Service $prometheusServiceName
