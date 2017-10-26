@@ -7,7 +7,7 @@ this is a [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com
 Launch the `prometheus` machine:
 
 ```bash
-vagrant up prometheus
+vagrant up prometheus --provider=virtualbox # or --provider=libvirt
 ```
 
 Logon at the Windows console.
