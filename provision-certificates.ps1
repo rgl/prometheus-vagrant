@@ -164,6 +164,14 @@ Import-Certificate `
     | Out-Null
 
 New-ClientCertificate 'prometheus.example.com'
+# import the client certificate to be able to use a browser to access the
+# exporters endpoints that are behind caddy https.
+Import-PfxCertificate `
+    -FilePath "$caDirectory\prometheus.example.com-client-key.p12" `
+    -CertStoreLocation Cert:\CurrentUser\My `
+    -Password $null `
+    -Exportable `
+    | Out-Null
 
 New-ServerCertificate 'prometheus.example.com'
 New-ServerCertificate 'alertmanager.example.com'
