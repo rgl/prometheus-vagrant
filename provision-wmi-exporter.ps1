@@ -1,5 +1,5 @@
 # install the wmi-exporter.
-choco install -y prometheus-wmi-exporter.install --version 0.2.7 `
+choco install -y prometheus-wmi-exporter.install --version 0.2.8 `
     --params '"/ListenAddress:127.0.0.1 /ListenPort:9182"'
 $result = sc.exe failure wmi_exporter reset= 0 actions= restart/1000
 if ($result -ne '[SC] ChangeServiceConfig2 SUCCESS') {
