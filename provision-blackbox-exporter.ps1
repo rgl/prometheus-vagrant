@@ -3,11 +3,33 @@ $serviceName = 'prometheus-blackbox-exporter'
 $serviceUsername = "NT SERVICE\$serviceName"
 
 # install blackbox-exporter.
-choco install -y prometheus-blackbox-exporter --version 0.10.0
+$archiveUrl = 'https://github.com/prometheus/blackbox_exporter/releases/download/v0.11.0/blackbox_exporter-0.11.0.windows-amd64.tar.gz'
+$archiveHash = '7f4eeee7d011ef10a1c97bd1b0d585ca8134a0fe73e503d01c459d6ea1d950b1'
+$archiveName = Split-Path $archiveUrl -Leaf
+$archiveTarName = $archiveName -replace '\.gz',''
+$archivePath = "$env:TEMP\$archiveName"
+Write-Host 'Downloading blackbox-exporter...'
+Invoke-WebRequest $archiveUrl -UseBasicParsing -OutFile $archivePath
+$archiveActualHash = (Get-FileHash $archivePath -Algorithm SHA256).Hash
+if ($archiveHash -ne $archiveActualHash) {
+    throw "$archiveName downloaded from $archiveUrl to $archivePath has $archiveActualHash hash witch does not match the expected $archiveHash"
+}
+Write-Host 'Installing blackbox-exporter...'
+mkdir $serviceHome | Out-Null
+Import-Module C:\ProgramData\chocolatey\helpers\chocolateyInstaller.psm1
+Get-ChocolateyUnzip -FileFullPath $archivePath -Destination $serviceHome
+Get-ChocolateyUnzip -FileFullPath $serviceHome\$archiveTarName -Destination $serviceHome
+Remove-Item $serviceHome\$archiveTarName
+$archiveTempPath = Resolve-Path $serviceHome\blackbox_exporter-*
+Move-Item $archiveTempPath\* $serviceHome
+Remove-Item $archiveTempPath
+Remove-Item $archivePath
 
 # configure the windows service to use a managed service account.
 Write-Host "Configuring the $serviceName service..."
+nssm install $serviceName $serviceHome\blackbox_exporter.exe
 nssm set $serviceName Start SERVICE_AUTO_START
+nssm set $serviceName AppDirectory $serviceHome
 nssm set $serviceName AppRotateFiles 1
 nssm set $serviceName AppRotateOnline 1
 nssm set $serviceName AppRotateSeconds 86400
@@ -31,11 +53,10 @@ if ($result -ne '[SC] ChangeServiceConfig2 SUCCESS') {
 }
 
 # configure the blackbox-exporter service.
-mkdir $serviceHome | Out-Null
 Disable-AclInheritance $serviceHome
 Grant-Permission $serviceHome SYSTEM FullControl
 Grant-Permission $serviceHome Administrators FullControl
-Grant-Permission $serviceHome $serviceUsername Read
+Grant-Permission $serviceHome $serviceUsername ReadAndExecute
 mkdir $serviceHome/conf | Out-Null
 Copy-Item c:/vagrant/blackbox.yml $serviceHome/conf
 mkdir $serviceHome/logs | Out-Null
