@@ -3,8 +3,8 @@ $prometheusServiceName = 'prometheus-service' # NB you cannot change this. its h
 $prometheusServiceUsername = "NT SERVICE\$prometheusServiceName"
 
 # download and install prometheus.
-$archiveUrl = 'https://github.com/prometheus/prometheus/releases/download/v2.0.0/prometheus-2.0.0.windows-amd64.tar.gz'
-$archiveHash = 'fb3539b9468c28161d200dcfe3007e7631d05f72f384c2164e40ae098d03ed59'
+$archiveUrl = 'https://github.com/prometheus/prometheus/releases/download/v2.1.0/prometheus-2.1.0.windows-amd64.tar.gz'
+$archiveHash = '0fd5c7f95c78a58fe4e96768e726f6fc203dc66218228ce931d851f395ca65bc'
 $archiveName = Split-Path $archiveUrl -Leaf
 $archiveTarName = $archiveName -replace '\.gz',''
 $archivePath = "$env:TEMP\$archiveName"
