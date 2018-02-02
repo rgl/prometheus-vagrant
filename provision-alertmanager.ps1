@@ -6,11 +6,11 @@ $alertmanagerServiceUsername = "NT SERVICE\$alertmanagerServiceName"
 Write-Host "Creating the $alertmanagerServiceName service..."
 nssm install $alertmanagerServiceName $alertmanagerHome\alertmanager.exe
 nssm set $alertmanagerServiceName AppParameters `
-    '-web.listen-address=localhost:9093' `
-    '-web.external-url=https://alertmanager.example.com' `
-    "-config.file=$alertmanagerHome/conf/alertmanager.yml" `
-    "-storage.path=$alertmanagerHome/data" `
-    "-data.retention=$(7*24)h"
+    '--web.listen-address=localhost:9093' `
+    '--web.external-url=https://alertmanager.example.com' `
+    "--config.file=$alertmanagerHome/conf/alertmanager.yml" `
+    "--storage.path=$alertmanagerHome/data" `
+    "--data.retention=$(7*24)h"
 nssm set $alertmanagerServiceName AppDirectory $alertmanagerHome
 nssm set $alertmanagerServiceName Start SERVICE_AUTO_START
 nssm set $alertmanagerServiceName AppRotateFiles 1
@@ -33,8 +33,8 @@ if ($result -ne '[SC] ChangeServiceConfig2 SUCCESS') {
 }
 
 # download and install alertmanager.
-$archiveUrl = 'https://github.com/prometheus/alertmanager/releases/download/v0.12.0/alertmanager-0.12.0.windows-amd64.tar.gz'
-$archiveHash = '2e9f2e98f7c6cf945316b1f578068257546534e1361151777244a30f3bc35ca2'
+$archiveUrl = 'https://github.com/prometheus/alertmanager/releases/download/v0.13.0/alertmanager-0.13.0.windows-amd64.tar.gz'
+$archiveHash = '2f51c8c5dc0ffa4762f1a26f8af75d5c41b641368a6d1f569b33dc3c5d514cd2'
 $archiveName = Split-Path $archiveUrl -Leaf
 $archiveTarName = $archiveName -replace '\.gz',''
 $archivePath = "$env:TEMP\$archiveName"
