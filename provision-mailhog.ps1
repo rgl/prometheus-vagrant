@@ -39,7 +39,7 @@ $archiveHash = '6db91b94b011a7586cb10cd52ca723088b207693ee56ac2aedb3c65d9052b8dd
 $archiveName = Split-Path $archiveUrl -Leaf
 $archivePath = "$env:TEMP\$archiveName"
 Write-Host 'Downloading MailHog...'
-Invoke-WebRequest $archiveUrl -UseBasicParsing -OutFile $archivePath
+(New-Object Net.WebClient).DownloadFile($archiveUrl, $archivePath)
 $archiveActualHash = (Get-FileHash $archivePath -Algorithm SHA256).Hash
 if ($archiveHash -ne $archiveActualHash) {
     throw "$archiveName downloaded from $archiveUrl to $archivePath has $archiveActualHash hash witch does not match the expected $archiveHash"

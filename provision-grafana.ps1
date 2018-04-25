@@ -34,7 +34,7 @@ $archiveHash = 'cff1304e131ff5b42c70b58307e13e1c6d0d091c88770716818e8c73ab0c5ba8
 $archiveName = Split-Path $archiveUrl -Leaf
 $archivePath = "$env:TEMP\$archiveName"
 Write-Host 'Downloading Grafana...'
-Invoke-WebRequest $archiveUrl -UseBasicParsing -OutFile $archivePath
+(New-Object Net.WebClient).DownloadFile($archiveUrl, $archivePath)
 $archiveActualHash = (Get-FileHash $archivePath -Algorithm SHA256).Hash
 if ($archiveHash -ne $archiveActualHash) {
     throw "$archiveName downloaded from $archiveUrl to $archivePath has $archiveActualHash hash witch does not match the expected $archiveHash"
