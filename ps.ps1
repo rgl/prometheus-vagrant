@@ -40,6 +40,43 @@ function choco {
     Start-Choco $Args
 }
 
+Add-Type @'
+using System;
+using System.Runtime.InteropServices;
+
+public static class Windows
+{
+    [DllImport("kernel32", SetLastError=true)]
+    public static extern UInt64 GetTickCount64();
+
+    public static TimeSpan GetUptime()
+    {
+        return TimeSpan.FromMilliseconds(GetTickCount64());
+    }
+}
+'@
+function Wait-ForCondition {
+    param(
+      [scriptblock]$Condition,
+      [int]$DebounceSeconds=5
+    )
+    process {
+        $begin = [Windows]::GetUptime()
+        do {
+            Start-Sleep -Seconds 1
+            try {
+              $result = &$Condition
+            } catch {
+              $result = $false
+            }
+            if (-not $result) {
+                $begin = [Windows]::GetUptime()
+                continue
+            }
+        } while ((([Windows]::GetUptime()) - $begin).TotalSeconds -lt $DebounceSeconds)
+    }
+}
+
 cd c:/vagrant
 $script = Resolve-Path $script
 cd (Split-Path $script -Parent)

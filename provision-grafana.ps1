@@ -76,6 +76,15 @@ function Invoke-GrafanaApi($relativeUrl, $body, $method='Post') {
         -Body (ConvertTo-Json -Depth 100 $body)
 }
 
+function Wait-ForGrafanaReady {
+    Wait-ForCondition {
+        $health = Invoke-RestMethod `
+            -Method Get `
+            -Uri $apiBaseUrl/health
+        $health.database -eq 'ok'
+    }
+}
+
 function New-GrafanaDataSource($body) {
     Invoke-GrafanaApi datasources $body
 }
@@ -83,6 +92,9 @@ function New-GrafanaDataSource($body) {
 function New-GrafanaDashboard($body) {
     Invoke-GrafanaApi dashboards/db $body
 }
+
+Write-Host 'Waiting for Grafana to be ready...'
+Wait-ForGrafanaReady
 
 # create a data source for the local prometheus server.
 Write-Host 'Creating the Prometheus Data Source...'
