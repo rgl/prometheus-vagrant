@@ -10,13 +10,12 @@ Vagrant.configure('2') do |config|
     lv.cpus = 2
     lv.cpu_mode = "host-passthrough"
     lv.keymap = "pt"
-    # replace the default synced_folder with something that works in cygwin.
+    # replace the default synced_folder with something that works in the base box.
     # NB for some reason, this does not work when placed in the base box Vagrantfile.
-    config.vm.synced_folder ".", "/vagrant", disabled: true
-    config.vm.synced_folder ".", "/cygdrive/c/vagrant", type: "rsync", rsync__exclude: [
-      ".vagrant/",
-      ".git/",
-      "*.box"]
+    config.vm.synced_folder '.', '/vagrant', type: 'rsync', rsync__exclude: [
+      '.vagrant/',
+      '.git/',
+      '*.box']
   end
 
   config.vm.provider :virtualbox do |v, override|
