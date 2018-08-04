@@ -17,8 +17,8 @@ nssm set $alertmanagerServiceName AppRotateFiles 1
 nssm set $alertmanagerServiceName AppRotateOnline 1
 nssm set $alertmanagerServiceName AppRotateSeconds 86400
 nssm set $alertmanagerServiceName AppRotateBytes 1048576
-nssm set $alertmanagerServiceName AppStdout $alertmanagerHome\logs\service.log
-nssm set $alertmanagerServiceName AppStderr $alertmanagerHome\logs\service.log
+nssm set $alertmanagerServiceName AppStdout $alertmanagerHome\logs\service-stdout.log
+nssm set $alertmanagerServiceName AppStderr $alertmanagerHome\logs\service-stderr.log
 $result = sc.exe sidtype $alertmanagerServiceName unrestricted
 if ($result -ne '[SC] ChangeServiceConfig2 SUCCESS') {
     throw "sc.exe sidtype failed with $result"

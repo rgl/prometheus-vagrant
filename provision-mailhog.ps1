@@ -18,8 +18,8 @@ nssm set $mailhogServiceName AppRotateFiles 1
 nssm set $mailhogServiceName AppRotateOnline 1
 nssm set $mailhogServiceName AppRotateSeconds 86400
 nssm set $mailhogServiceName AppRotateBytes 1048576
-nssm set $mailhogServiceName AppStdout $mailhogHome\logs\service.log
-nssm set $mailhogServiceName AppStderr $mailhogHome\logs\service.log
+nssm set $mailhogServiceName AppStdout $mailhogHome\logs\service-stdout.log
+nssm set $mailhogServiceName AppStderr $mailhogHome\logs\service-stderr.log
 $result = sc.exe sidtype $mailhogServiceName unrestricted
 if ($result -ne '[SC] ChangeServiceConfig2 SUCCESS') {
     throw "sc.exe sidtype failed with $result"

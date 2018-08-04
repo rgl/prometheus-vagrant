@@ -35,8 +35,8 @@ nssm set $prometheusServiceName AppRotateFiles 1
 nssm set $prometheusServiceName AppRotateOnline 1
 nssm set $prometheusServiceName AppRotateSeconds 86400
 nssm set $prometheusServiceName AppRotateBytes 1048576
-nssm set $prometheusServiceName AppStdout $prometheusHome\logs\service.log
-nssm set $prometheusServiceName AppStderr $prometheusHome\logs\service.log
+nssm set $prometheusServiceName AppStdout $prometheusHome\logs\service-stdout.log
+nssm set $prometheusServiceName AppStderr $prometheusHome\logs\service-stderr.log
 nssm set $prometheusServiceName AppDirectory $prometheusInstallHome
 nssm set $prometheusServiceName AppParameters `
     "--config.file=$prometheusHome/prometheus.yml" `

@@ -10,8 +10,8 @@ nssm set $caddyServiceName AppRotateFiles 1
 nssm set $caddyServiceName AppRotateOnline 1
 nssm set $caddyServiceName AppRotateSeconds 86400
 nssm set $caddyServiceName AppRotateBytes 1048576
-nssm set $caddyServiceName AppStdout $caddyHome/logs/service.log
-nssm set $caddyServiceName AppStderr $caddyHome/logs/service.log
+nssm set $caddyServiceName AppStdout $caddyHome/logs/service-stdout.log
+nssm set $caddyServiceName AppStderr $caddyHome/logs/service-stderr.log
 nssm set $caddyServiceName AppDirectory $caddyHome
 nssm set $caddyServiceName AppParameters `
     '-agree=true' `

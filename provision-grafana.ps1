@@ -13,8 +13,8 @@ nssm set $grafanaServiceName AppRotateFiles 1
 nssm set $grafanaServiceName AppRotateOnline 1
 nssm set $grafanaServiceName AppRotateSeconds 86400
 nssm set $grafanaServiceName AppRotateBytes 1048576
-nssm set $grafanaServiceName AppStdout $grafanaHome\logs\service.log
-nssm set $grafanaServiceName AppStderr $grafanaHome\logs\service.log
+nssm set $grafanaServiceName AppStdout $grafanaHome\logs\service-stdout.log
+nssm set $grafanaServiceName AppStderr $grafanaHome\logs\service-stderr.log
 $result = sc.exe sidtype $grafanaServiceName unrestricted
 if ($result -ne '[SC] ChangeServiceConfig2 SUCCESS') {
     throw "sc.exe sidtype failed with $result"

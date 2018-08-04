@@ -34,8 +34,8 @@ nssm set $serviceName AppRotateFiles 1
 nssm set $serviceName AppRotateOnline 1
 nssm set $serviceName AppRotateSeconds 86400
 nssm set $serviceName AppRotateBytes 1048576
-nssm set $serviceName AppStdout $serviceHome\logs\service.log
-nssm set $serviceName AppStderr $serviceHome\logs\service.log
+nssm set $serviceName AppStdout $serviceHome\logs\service-stdout.log
+nssm set $serviceName AppStderr $serviceHome\logs\service-stderr.log
 nssm set $serviceName AppParameters `
     '--web.listen-address=localhost:9115' `
     "--config.file=$serviceHome/conf/blackbox.yml"
