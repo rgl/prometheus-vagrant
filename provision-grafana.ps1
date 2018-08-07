@@ -98,13 +98,23 @@ Wait-ForGrafanaReady
 
 # create a data source for the local prometheus server.
 Write-Host 'Creating the Prometheus Data Source...'
+function Get-PrometheusSimpleSetting($name) {
+    $r = [regex]::new("^\s+$([regex]::Escape($name)):\s*(\d+[a-z])")
+    ((Get-Content 'prometheus.yml') -match $r)[0] -match $r | Out-Null
+    $Matches[1]
+}
 New-GrafanaDataSource @{
     name = 'Prometheus'
     type = 'prometheus'
     url = 'https://prometheus.example.com'
     access = 'direct'
     basicAuth = $false
-}
+    jsonData = @{
+        httpMethod = 'GET'
+        timeInterval = Get-PrometheusSimpleSetting 'scrape_interval'
+        queryTimeout = Get-PrometheusSimpleSetting 'scrape_timeout'
+    }
+} | ConvertTo-Json
 
 # create a dashboard for the wmi_exporter.
 # NB this dashboard originaly came from https://grafana.com/dashboards/2129
