@@ -34,6 +34,7 @@ Vagrant.configure('2') do |config|
     config.vm.provision :shell, path: 'ps.ps1', args: 'provision-mailhog.ps1'
     config.vm.provision :shell, path: 'ps.ps1', args: 'provision-alertmanager.ps1'
     config.vm.provision :shell, path: 'ps.ps1', args: 'provision-performance-counters-exporter.ps1'
+    config.vm.provision :shell, path: 'ps.ps1', args: 'provision-powershell-exporter.ps1'
     config.vm.provision :shell, path: 'ps.ps1', args: 'provision-wmi-exporter.ps1'
     config.vm.provision :shell, path: 'ps.ps1', args: 'provision-blackbox-exporter.ps1'
     config.vm.provision :shell, path: 'ps.ps1', args: 'provision-prometheus.ps1'

@@ -29,6 +29,16 @@ scrape_configs:
     static_configs:
       - targets:
         - prometheus.example.com:9009
+  - job_name: 'pse'
+    scheme: https
+    tls_config:
+      ca_file: tls/prometheus-example-ca-crt.pem
+      cert_file: tls/prometheus.example.com-client-crt.pem
+      key_file: tls/prometheus.example.com-client-key.pem
+    metrics_path: /pse/metrics
+    static_configs:
+      - targets:
+        - prometheus.example.com:9009
   - job_name: 'wmi'
     scheme: https
     tls_config:

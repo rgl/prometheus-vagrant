@@ -31,5 +31,8 @@ https://prometheus.example.com:9009 {
     proxy /pce localhost:9358 {
         without /pce
     }
+    proxy /pse localhost:9360 {
+        without /pse
+    }
     proxy /wmi localhost:9182
 }

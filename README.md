@@ -34,6 +34,7 @@ Exporters are listening in the loopback interface and are made available from th
 |-----------------------------------------------------------------------------------|---------------------------------------------------|
 | [blackbox_exporter](https://github.com/prometheus/blackbox_exporter)              | https://prometheus.example.com:9009/blackbox      |
 | [PerformanceCountersExporter](https://github.com/rgl/PerformanceCountersExporter) | https://prometheus.example.com:9009/pce/metrics   |
+| [PowerShellExporter](https://github.com/rgl/PowerShellExporter)                   | https://prometheus.example.com:9009/pse/metrics   |
 | [wmi_exporter](https://github.com/martinlindhe/wmi_exporter)                      | https://prometheus.example.com:9009/wmi/metrics   |
 
 # Reference
