@@ -22,24 +22,18 @@ Prometheus is available at:
 
 **NB** Alert emails are sent to a local SMTP server and can be seen at [http://localhost:8025](http://localhost:8025).
 
-[wmi_exporter](https://github.com/martinlindhe/wmi_exporter) is available at:
-
-  [https://prometheus.example.com:9182](https://prometheus.example.com:9182)
-
-**NB** It can only be accessed with a client certificate.
-
-[blackbox_exporter](https://github.com/prometheus/blackbox_exporter) is available at:
-
-  [https://prometheus.example.com:9115](https://prometheus.example.com:9115)
-
-**NB** It can only be accessed with a client certificate.
-
 Grafana is available at:
 
   [https://grafana.example.com](https://grafana.example.com)
 
 **NB** Login as `admin` and password `admin`.
 
+Exporters are listening in the loopback interface and are made available from the caddy reverse proxy (which requires a client certificate):
+
+| Exporter                                                             | Address                                      |
+|----------------------------------------------------------------------|----------------------------------------------|
+| [wmi_exporter](https://github.com/martinlindhe/wmi_exporter)         | https://prometheus.example.com:9009/wmi      |
+| [blackbox_exporter](https://github.com/prometheus/blackbox_exporter) | https://prometheus.example.com:9009/blackbox |
 
 # Reference
 

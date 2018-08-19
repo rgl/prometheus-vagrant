@@ -55,8 +55,6 @@ Remove-Item $archivePath
 Disable-AclInheritance $grafanaHome/conf
 Grant-Permission $grafanaHome/conf Administrators FullControl
 Grant-Permission $grafanaHome/conf $grafanaServiceUsername Read
-Copy-Item c:/vagrant/shared/prometheus-example-ca/grafana.example.com-crt.pem $grafanaHome/conf
-Copy-Item c:/vagrant/shared/prometheus-example-ca/grafana.example.com-key.pem $grafanaHome/conf
 Copy-Item c:/vagrant/grafana.ini $grafanaHome/conf
 
 Write-Host "Starting the $grafanaServiceName service..."

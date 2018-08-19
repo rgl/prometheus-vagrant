@@ -1,37 +1,35 @@
 https://prometheus.example.com {
-    bind prometheus.example.com
     tls tls/prometheus.example.com-crt.pem tls/prometheus.example.com-key.pem
     proxy / localhost:9090 {
         transparent
     }
 }
 
-# wmi_exporter
-https://prometheus.example.com:9182 {
-    bind prometheus.example.com
-    tls tls/prometheus.example.com-crt.pem tls/prometheus.example.com-key.pem {
-        clients tls/prometheus-example-ca-crt.pem
-    }
-    proxy / localhost:9182 {
-        transparent
-    }
-}
-
-# blackbox_exporter
-https://prometheus.example.com:9115 {
-    bind prometheus.example.com
-    tls tls/prometheus.example.com-crt.pem tls/prometheus.example.com-key.pem {
-        clients tls/prometheus-example-ca-crt.pem
-    }
-    proxy / localhost:9115 {
-        transparent
-    }
-}
-
 https://alertmanager.example.com {
-    bind alertmanager.example.com
     tls tls/alertmanager.example.com-crt.pem tls/alertmanager.example.com-key.pem
     proxy / localhost:9093 {
+        transparent
+    }
+}
+
+https://grafana.example.com {
+    tls tls/grafana.example.com-crt.pem tls/grafana.example.com-key.pem
+    proxy / localhost:9091 {
+        transparent
+    }
+}
+
+# reverse proxy for all the exporters on the local machine that
+# requires a client certificate.
+https://prometheus.example.com:9009 {
+    tls tls/prometheus.example.com-crt.pem tls/prometheus.example.com-key.pem {
+        clients tls/prometheus-example-ca-crt.pem
+    }
+    proxy /blackbox localhost:9115 {
+        without /blackbox
+        transparent
+    }
+    proxy /wmi localhost:9182 {
         transparent
     }
 }

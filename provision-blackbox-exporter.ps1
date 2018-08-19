@@ -65,7 +65,7 @@ Grant-Permission $serviceHome/logs SYSTEM FullControl
 Grant-Permission $serviceHome/logs Administrators FullControl
 Grant-Permission $serviceHome/logs $serviceUsername FullControl
 
-Write-Host "Starting the $serviceUsername service..."
+Write-Host "Starting the $serviceName service..."
 Start-Service $serviceName
 
 # give it a try.
@@ -80,6 +80,6 @@ Start-Service $serviceName
     "$env:USERPROFILE\Desktop\Blackbox Exporter.url",
     @"
 [InternetShortcut]
-URL=https://prometheus.example.com:9115
+URL=https://prometheus.example.com:9009/blackbox
 "@)
 '@)

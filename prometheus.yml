@@ -1,7 +1,8 @@
 # see https://prometheus.io/docs/operating/configuration/
 global:
-  scrape_interval: 15s # Default is 1m.
-  scrape_timeout: 10s  # Default is 10s.
+  scrape_interval: 15s    # Default is 1m.
+  scrape_timeout: 10s     # Default is 10s.
+  evaluation_interval: 1m # Default is 1m.
 
 alerting:
   alertmanagers:
@@ -18,22 +19,23 @@ scrape_configs:
     static_configs:
       - targets: 
         - localhost:9090
-  - job_name: 'windows'
+  - job_name: 'wmi'
     scheme: https
     tls_config:
       ca_file: tls/prometheus-example-ca-crt.pem
       cert_file: tls/prometheus.example.com-client-crt.pem
       key_file: tls/prometheus.example.com-client-key.pem
+    metrics_path: /wmi/metrics
     static_configs:
       - targets:
-        - prometheus.example.com:9182
+        - prometheus.example.com:9009
   - job_name: 'blackbox-http'
     scheme: https
     tls_config:
       ca_file: tls/prometheus-example-ca-crt.pem
       cert_file: tls/prometheus.example.com-client-crt.pem
       key_file: tls/prometheus.example.com-client-key.pem
-    metrics_path: /probe
+    metrics_path: /blackbox/probe
     params:
       module: [http_2xx]
     static_configs:
@@ -46,14 +48,14 @@ scrape_configs:
       - source_labels: [__param_target]
         target_label: instance
       - target_label: __address__
-        replacement: prometheus.example.com:9115
+        replacement: prometheus.example.com:9009
   - job_name: 'blackbox-ssh'
     scheme: https
     tls_config:
       ca_file: tls/prometheus-example-ca-crt.pem
       cert_file: tls/prometheus.example.com-client-crt.pem
       key_file: tls/prometheus.example.com-client-key.pem
-    metrics_path: /probe
+    metrics_path: /blackbox/probe
     params:
       module: [ssh_banner]
     static_configs:
@@ -66,4 +68,4 @@ scrape_configs:
       - source_labels: [__param_target]
         target_label: instance
       - target_label: __address__
-        replacement: prometheus.example.com:9115
+        replacement: prometheus.example.com:9009

@@ -59,6 +59,8 @@ Copy-Item c:/vagrant/shared/prometheus-example-ca/prometheus.example.com-crt.pem
 Copy-Item c:/vagrant/shared/prometheus-example-ca/prometheus.example.com-key.pem $caddyHome/tls
 Copy-Item c:/vagrant/shared/prometheus-example-ca/alertmanager.example.com-crt.pem $caddyHome/tls
 Copy-Item c:/vagrant/shared/prometheus-example-ca/alertmanager.example.com-key.pem $caddyHome/tls
+Copy-Item c:/vagrant/shared/prometheus-example-ca/grafana.example.com-crt.pem $caddyHome/tls
+Copy-Item c:/vagrant/shared/prometheus-example-ca/grafana.example.com-key.pem $caddyHome/tls
 
 Write-Host "Starting the $caddyServiceName service..."
 Start-Service $caddyServiceName
