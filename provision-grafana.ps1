@@ -128,13 +128,13 @@ New-GrafanaDashboard @{
 
 # create a dashboard for wmi_exporter.
 # NB this dashboard originaly came from https://grafana.com/dashboards/2129
-Write-Host 'Creating the Windows Dashboard...'
+Write-Host 'Creating the wmi dashboard...'
 $dashboard = (Get-Content -Raw grafana-windows-dashboard.json) `
     -replace '\${DS_PROMETHEUS}','Prometheus' `
     | ConvertFrom-Json
 $dashboard.PSObject.Properties.Remove('__inputs')
 $dashboard.PSObject.Properties.Remove('__requires')
-$dashboard.title = 'Windows'
+$dashboard.title = 'wmi'
 #Invoke-GrafanaApi dashboards/db/$($dashboard.title.ToLower() -replace ' ','-') $null Delete
 New-GrafanaDashboard @{
     dashboard = $dashboard
