@@ -30,10 +30,11 @@ Grafana is available at:
 
 Exporters are listening in the loopback interface and are made available from the caddy reverse proxy (which requires a client certificate):
 
-| Exporter                                                             | Address                                      |
-|----------------------------------------------------------------------|----------------------------------------------|
-| [wmi_exporter](https://github.com/martinlindhe/wmi_exporter)         | https://prometheus.example.com:9009/wmi      |
-| [blackbox_exporter](https://github.com/prometheus/blackbox_exporter) | https://prometheus.example.com:9009/blackbox |
+| Exporter                                                                          | Address                                           |
+|-----------------------------------------------------------------------------------|---------------------------------------------------|
+| [blackbox_exporter](https://github.com/prometheus/blackbox_exporter)              | https://prometheus.example.com:9009/blackbox      |
+| [PerformanceCountersExporter](https://github.com/rgl/PerformanceCountersExporter) | https://prometheus.example.com:9009/pce/metrics   |
+| [wmi_exporter](https://github.com/martinlindhe/wmi_exporter)                      | https://prometheus.example.com:9009/wmi/metrics   |
 
 # Reference
 
