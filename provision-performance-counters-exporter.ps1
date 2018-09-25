@@ -2,8 +2,8 @@ $serviceHome = 'C:\performance-counters-exporter'
 $serviceName = 'PerformanceCountersExporter'
 
 # install performance-counters-exporter.
-$archiveUrl = 'https://github.com/rgl/PerformanceCountersExporter/releases/download/v0.0.4/PerformanceCountersExporter.zip'
-$archiveHash = '487b158eca525d3ef8392caabb4c1a1137244b168d4b0651c43dc0d237464cc8'
+$archiveUrl = 'https://github.com/rgl/PerformanceCountersExporter/releases/download/v0.0.5/PerformanceCountersExporter.zip'
+$archiveHash = 'ff2e4de7c367abf12419659e968fa2c70fe6c783e6b5c7b68f3ef49b8d49c516'
 $archiveName = Split-Path $archiveUrl -Leaf
 $archivePath = "$env:TEMP\$archiveName"
 Write-Host 'Downloading performance-counters-exporter...'
