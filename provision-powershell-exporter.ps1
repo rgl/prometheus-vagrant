@@ -2,8 +2,8 @@ $serviceHome = 'C:\powershell-exporter'
 $serviceName = 'PowerShellExporter'
 
 # install powershell-exporter.
-$archiveUrl = 'https://github.com/rgl/PowerShellExporter/releases/download/v0.0.2/PowerShellExporter.zip'
-$archiveHash = '3a05e47ae100a2035cc5c6002985581a7fdb9087f55f66194545a37260e412eb'
+$archiveUrl = 'https://github.com/rgl/PowerShellExporter/releases/download/v0.0.3/PowerShellExporter.zip'
+$archiveHash = 'a8b220e10079d7a75f9c514f4ede69f545c3d044ab55119562baa73b33377966'
 $archiveName = Split-Path $archiveUrl -Leaf
 $archivePath = "$env:TEMP\$archiveName"
 Write-Host 'Downloading powershell-exporter...'
