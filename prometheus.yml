@@ -4,6 +4,9 @@ global:
   scrape_timeout: 10s     # Default is 10s.
   evaluation_interval: 1m # Default is 1m.
 
+remote_write:
+  - url: http://localhost:9201/prometheusbeat
+
 alerting:
   alertmanagers:
     - scheme: http

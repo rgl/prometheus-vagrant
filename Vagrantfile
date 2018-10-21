@@ -2,11 +2,12 @@ hosts = '''
 10.10.10.100 prometheus.example.com
 10.10.10.100 alertmanager.example.com
 10.10.10.100 grafana.example.com
+10.10.10.100 elasticsearch.example.com
 '''
 
 Vagrant.configure('2') do |config|
   config.vm.provider "libvirt" do |lv, config|
-    lv.memory = 2048
+    lv.memory = 3*1024
     lv.cpus = 2
     lv.cpu_mode = "host-passthrough"
     lv.keymap = "pt"
@@ -18,7 +19,7 @@ Vagrant.configure('2') do |config|
   config.vm.provider :virtualbox do |v, override|
     v.linked_clone = true
     v.cpus = 2
-    v.memory = 2048
+    v.memory = 3*1024
     v.customize ['modifyvm', :id, '--vram', 64]
     v.customize ['modifyvm', :id, '--clipboard', 'bidirectional']
   end
@@ -37,6 +38,8 @@ Vagrant.configure('2') do |config|
     config.vm.provision :shell, path: 'ps.ps1', args: 'provision-powershell-exporter.ps1'
     config.vm.provision :shell, path: 'ps.ps1', args: 'provision-wmi-exporter.ps1'
     config.vm.provision :shell, path: 'ps.ps1', args: 'provision-blackbox-exporter.ps1'
+    config.vm.provision :shell, path: 'ps.ps1', args: 'provision-elasticsearch-oss.ps1'
+    config.vm.provision :shell, path: 'ps.ps1', args: 'provision-prometheusbeat.ps1'
     config.vm.provision :shell, path: 'ps.ps1', args: 'provision-prometheus.ps1'
     config.vm.provision :shell, path: 'ps.ps1', args: 'provision-grafana.ps1'
   end

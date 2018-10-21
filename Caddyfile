@@ -12,6 +12,13 @@ https://alertmanager.example.com {
     }
 }
 
+https://elasticsearch.example.com {
+    tls tls/elasticsearch.example.com-crt.pem tls/elasticsearch.example.com-key.pem
+    proxy / localhost:9200 {
+        transparent
+    }
+}
+
 https://grafana.example.com {
     tls tls/grafana.example.com-crt.pem tls/grafana.example.com-key.pem
     proxy / localhost:9091 {

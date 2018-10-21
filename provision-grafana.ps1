@@ -114,6 +114,33 @@ New-GrafanaDataSource @{
     }
 } | ConvertTo-Json
 
+# create a data source for prometheusbeat (elasticsearch).
+# NB use Invoke-GrafanaApi datasources $null 'Get' to get all datasources.
+Write-Host 'Creating the Prometheusbeat Elastisearch Data Source...'
+New-GrafanaDataSource @{
+    name = 'Prometheusbeat'
+    type = 'elasticsearch'
+    access = 'proxy'
+    database = '[prometheusbeat-]YYYY.MM.DD'
+    url = 'https://elasticsearch.example.com'
+    jsonData = @{
+        esVersion = 56
+        interval = 'Daily'
+        timeField = '@timestamp'
+    }
+} | ConvertTo-Json
+
+# create a dashboard for Prometheusbeat.
+Write-Host 'Creating the Prometheusbeat dashboard...'
+$dashboard = (Get-Content -Raw C:\vagrant\grafana-prometheusbeat-dashboard.json) `
+    -replace '\${DS_PROMETHEUSBEAT}','Prometheusbeat' `
+    | ConvertFrom-Json
+$dashboard.PSObject.Properties.Remove('__inputs')
+$dashboard.PSObject.Properties.Remove('__requires')
+New-GrafanaDashboard @{
+    dashboard = $dashboard
+}
+
 # create a dashboard for PerformanceCountersExporter.
 Write-Host 'Creating the pce dashboard...'
 $dashboard = (Get-Content -Raw C:\performance-counters-exporter\grafana-dashboard.json) `

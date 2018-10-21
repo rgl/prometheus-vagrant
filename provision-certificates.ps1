@@ -1,3 +1,4 @@
+choco install -y vcredist140 # NB needed until https://github.com/chocolatey/chocolatey-coreteampackages/issues/1120 is really fixed.
 choco install -y openssl.light
 
 # update this session environment variables with the changes made by
@@ -175,4 +176,5 @@ Import-PfxCertificate `
 
 New-ServerCertificate 'prometheus.example.com'
 New-ServerCertificate 'alertmanager.example.com'
+New-ServerCertificate 'elasticsearch.example.com'
 New-ServerCertificate 'grafana.example.com'

@@ -1,0 +1,24 @@
+# see https://github.com/infonova/prometheusbeat/blob/master/prometheusbeat.reference.yml
+# see https://elasticsearch.example.com/_cat/health?v
+# see https://elasticsearch.example.com/_cat/indices?v
+# see https://elasticsearch.example.com/_cat/templates?v
+# see https://elasticsearch.example.com/_template/prometheusbeat
+# see https://elasticsearch.example.com/prometheusbeat-*/_search
+# see https://elasticsearch.example.com/prometheusbeat-*/_search?q=labels.name:up
+prometheusbeat:
+  listen: 127.0.0.1:9201
+  context: /prometheusbeat
+output.elasticsearch:
+  enabled: true
+  hosts:
+    - https://elasticsearch.example.com:443
+  ssl.enabled: true
+  ssl.certificate_authorities:
+    - c:/prometheusbeat/tls/prometheus-example-ca-crt.pem
+setup.template.name: prometheusbeat
+setup.template.pattern: prometheusbeat-*
+output.elasticsearch.index: prometheusbeat-%{+yyyy.MM.dd}
+logging.to_files: true
+logging.files:
+  rotateeverybytes: 10485760 # 10MB
+  keepfiles: 7

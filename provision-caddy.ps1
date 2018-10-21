@@ -55,12 +55,8 @@ Disable-AclInheritance $caddyHome/tls
 Grant-Permission $caddyHome/tls Administrators FullControl
 Grant-Permission $caddyHome/tls $caddyServiceUsername Read
 Copy-Item c:/vagrant/shared/prometheus-example-ca/prometheus-example-ca-crt.pem $caddyHome/tls
-Copy-Item c:/vagrant/shared/prometheus-example-ca/prometheus.example.com-crt.pem $caddyHome/tls
-Copy-Item c:/vagrant/shared/prometheus-example-ca/prometheus.example.com-key.pem $caddyHome/tls
-Copy-Item c:/vagrant/shared/prometheus-example-ca/alertmanager.example.com-crt.pem $caddyHome/tls
-Copy-Item c:/vagrant/shared/prometheus-example-ca/alertmanager.example.com-key.pem $caddyHome/tls
-Copy-Item c:/vagrant/shared/prometheus-example-ca/grafana.example.com-crt.pem $caddyHome/tls
-Copy-Item c:/vagrant/shared/prometheus-example-ca/grafana.example.com-key.pem $caddyHome/tls
+Copy-Item c:/vagrant/shared/prometheus-example-ca/*.example.com-crt.pem $caddyHome/tls
+Copy-Item c:/vagrant/shared/prometheus-example-ca/*.example.com-key.pem $caddyHome/tls
 
 Write-Host "Starting the $caddyServiceName service..."
 Start-Service $caddyServiceName

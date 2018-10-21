@@ -37,6 +37,8 @@ Exporters are listening in the loopback interface and are made available from th
 | [PowerShellExporter](https://github.com/rgl/PowerShellExporter)                   | https://prometheus.example.com:9009/pse/metrics   |
 | [wmi_exporter](https://github.com/martinlindhe/wmi_exporter)                      | https://prometheus.example.com:9009/wmi/metrics   |
 
+[Prometheusbeat](https://github.com/rgl/prometheusbeat) is also installed. It's used as a [prometheus remote write](https://prometheus.io/docs/operating/integrations/#remote-endpoints-and-storage) endpoint, which uses Elasticsearch as a long term storage solution.
+
 # Reference
 
 * [Exporters and their default port allocations](https://github.com/prometheus/prometheus/wiki/Default-port-allocations)

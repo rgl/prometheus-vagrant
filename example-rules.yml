@@ -1,6 +1,14 @@
 groups:
 - name: example
   rules:
+  - alert: PrometheusRemoteStorageFailing
+    expr: 'rate(prometheus_remote_storage_failed_samples_total[5m]) > 0'
+    for: 5m
+    labels:
+      severity: page
+    annotations:
+      description: '{{$labels.instance}} queue {{$labels.queue}} is failing for more than 5 minutes.'
+      summary: 'Prometheus remote storage queue {{$labels.queue}} is failing'
   - alert: InstanceDown
     expr: 'up == 0'
     for: 5m
