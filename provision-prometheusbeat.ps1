@@ -66,23 +66,25 @@ function Get-PrometheusbeatMetricNames {
 }
 
 # download and install.
-$archiveUrl = 'https://github.com/rgl/prometheusbeat/releases/download/v6.4.1-windows/prometheusbeat.zip'
-$archiveHash = '468a260c77b34436160a9307d1345fc93789eec305c67fb168d659e9a9e8a366'
+$archiveUrl = 'https://github.com/infonova/prometheusbeat/releases/download/v6.4.1/prometheusbeat-6.4.1-windows-x86_64.zip'
+$archiveHash = '64b82249a6dadb5faff49d90919621f2538927a0b148215686a6c9893e2a30786e8bbab37e4810f38d5822dd57c2864cf43cfebb8426118fbdb55fba57e09ac3'
 $archiveName = Split-Path $archiveUrl -Leaf
 $archivePath = "$env:TEMP\$archiveName"
 Write-Host 'Downloading Prometheusbeat...'
 (New-Object Net.WebClient).DownloadFile($archiveUrl, $archivePath)
-$archiveActualHash = (Get-FileHash $archivePath -Algorithm SHA256).Hash
+$archiveActualHash = (Get-FileHash $archivePath -Algorithm SHA512).Hash
 if ($archiveHash -ne $archiveActualHash) {
     throw "$archiveName downloaded from $archiveUrl to $archivePath has $archiveActualHash hash witch does not match the expected $archiveHash"
 }
 Write-Host 'Installing Prometheusbeat...'
+Expand-Archive $archivePath -DestinationPath "$prometheusbeatHome.tmp"
 mkdir $prometheusbeatHome | Out-Null
-Expand-Archive $archivePath -DestinationPath $prometheusbeatHome
+Move-Item "$(Resolve-Path "$prometheusbeatHome.tmp\prometheusbeat-*")\*" $prometheusbeatHome
+rmdir -Recurse "$prometheusbeatHome.tmp"
 Remove-Item $archivePath
 
 # configure the windows service using a managed service account.
- Write-Host "Configuring the $prometheusbeatServiceName service..."
+Write-Host "Configuring the $prometheusbeatServiceName service..."
 New-Service `
     -Name $prometheusbeatServiceName `
     -StartupType 'Automatic' `
