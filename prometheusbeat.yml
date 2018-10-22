@@ -20,5 +20,6 @@ setup.template.pattern: prometheusbeat-*
 output.elasticsearch.index: prometheusbeat-%{+yyyy.MM.dd}
 logging.to_files: true
 logging.files:
+  name: prometheusbeat.log
   rotateeverybytes: 10485760 # 10MB
   keepfiles: 7
