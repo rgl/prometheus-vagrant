@@ -3,8 +3,8 @@ $serviceName = 'prometheus-blackbox-exporter'
 $serviceUsername = "NT SERVICE\$serviceName"
 
 # install blackbox-exporter.
-$archiveUrl = 'https://github.com/prometheus/blackbox_exporter/releases/download/v0.12.0/blackbox_exporter-0.12.0.windows-amd64.tar.gz'
-$archiveHash = 'e8194ffe7c011f803b17e476c6527f6ad382ca523f4e93298f3254f39ab51d24'
+$archiveUrl = 'https://github.com/prometheus/blackbox_exporter/releases/download/v0.13.0/blackbox_exporter-0.13.0.windows-amd64.tar.gz'
+$archiveHash = 'fed20c55826da0e57a86ee5afda603dcf4e9e58aa33b4548a057a4480105d8ac'
 $archiveName = Split-Path $archiveUrl -Leaf
 $archiveTarName = $archiveName -replace '\.gz',''
 $archivePath = "$env:TEMP\$archiveName"
