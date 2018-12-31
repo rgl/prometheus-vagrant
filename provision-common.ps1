@@ -129,16 +129,6 @@ iex ((New-Object Net.WebClient).DownloadString('https://chocolatey.org/install.p
 # install the Carbon PowerShell module.
 choco install -y carbon
 
-# install classic shell.
-New-Item -Path HKCU:Software\IvoSoft\ClassicStartMenu -Force `
-    | New-ItemProperty -Name ShowedStyle2      -Value 1 -PropertyType DWORD `
-    | Out-Null
-New-Item -Path HKCU:Software\IvoSoft\ClassicStartMenu\Settings -Force `
-    | New-ItemProperty -Name EnableStartButton -Value 1 -PropertyType DWORD `
-    | New-ItemProperty -Name SkipMetro         -Value 1 -PropertyType DWORD `
-    | Out-Null
-choco install -y classic-shell -installArgs ADDLOCAL=ClassicStartMenu
-
 # install Google Chrome.
 # NB --ignore-checksums is needed because chrome does not release a versioned
 #    installer... as such, sometimes this package installation breaks if we
