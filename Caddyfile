@@ -1,4 +1,5 @@
 https://prometheus.example.com {
+    log / stdout "{when} {host} {remote} - {user} \"{method} {uri} {proto}\" {status} {size} {latency_ms}"
     tls tls/prometheus.example.com-crt.pem tls/prometheus.example.com-key.pem
     proxy / localhost:9090 {
         transparent
@@ -6,6 +7,7 @@ https://prometheus.example.com {
 }
 
 https://alertmanager.example.com {
+    log / stdout "{when} {host} {remote} - {user} \"{method} {uri} {proto}\" {status} {size} {latency_ms}"
     tls tls/alertmanager.example.com-crt.pem tls/alertmanager.example.com-key.pem
     proxy / localhost:9093 {
         transparent
@@ -13,6 +15,7 @@ https://alertmanager.example.com {
 }
 
 https://elasticsearch.example.com {
+    log / stdout "{when} {host} {remote} - {user} \"{method} {uri} {proto}\" {status} {size} {latency_ms}"
     tls tls/elasticsearch.example.com-crt.pem tls/elasticsearch.example.com-key.pem
     proxy / localhost:9200 {
         transparent
@@ -20,6 +23,7 @@ https://elasticsearch.example.com {
 }
 
 https://grafana.example.com {
+    log / stdout "{when} {host} {remote} - {user} \"{method} {uri} {proto}\" {status} {size} {latency_ms}"
     tls tls/grafana.example.com-crt.pem tls/grafana.example.com-key.pem
     proxy / localhost:9091 {
         transparent
@@ -29,6 +33,7 @@ https://grafana.example.com {
 # reverse proxy for all the exporters on the local machine that
 # requires a client certificate.
 https://prometheus.example.com:9009 {
+    log / stdout "{when} {host} {remote} - {user} \"{method} {uri} {proto}\" {status} {size} {latency_ms}"
     tls tls/prometheus.example.com-crt.pem tls/prometheus.example.com-key.pem {
         clients tls/prometheus-example-ca-crt.pem
     }
