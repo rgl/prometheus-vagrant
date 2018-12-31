@@ -18,6 +18,8 @@ output.elasticsearch:
 setup.template.name: prometheusbeat
 setup.template.pattern: prometheusbeat-*
 output.elasticsearch.index: prometheusbeat-%{+yyyy.MM.dd}
+logging.level: info
+logging.metrics.enabled: false
 logging.to_files: true
 logging.files:
   name: prometheusbeat.log
