@@ -25,7 +25,7 @@ Vagrant.configure('2') do |config|
   end
 
   config.vm.define :prometheus do |config|
-    config.vm.box = 'windows-2016-amd64'
+    config.vm.box = 'windows-2019-amd64'
     config.vm.hostname = 'prometheus'
     config.vm.network :private_network, ip: '10.10.10.100', libvirt__forward_mode: 'route', libvirt__dhcp_enabled: false
     config.vm.provision :shell, inline: "'#{hosts}' | Out-File -Encoding Ascii -Append c:/Windows/System32/drivers/etc/hosts"

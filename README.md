@@ -2,7 +2,7 @@ this is a [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com
 
 # Usage
 
-[Build and install the base image](https://github.com/rgl/windows-2016-vagrant).
+[Build and install the Windows 2019 base image](https://github.com/rgl/windows-2016-vagrant).
 
 Launch the `prometheus` machine:
 
