@@ -5,7 +5,7 @@ groups:
     expr: 'rate(prometheus_remote_storage_failed_samples_total[5m]) > 0'
     for: 5m
     labels:
-      severity: page
+      severity: critical
     annotations:
       description: '{{$labels.instance}} queue {{$labels.queue}} is failing for more than 5 minutes.'
       summary: 'Prometheus remote storage queue {{$labels.queue}} is failing'
@@ -13,7 +13,7 @@ groups:
     expr: 'up == 0'
     for: 5m
     labels:
-      severity: page
+      severity: critical
     annotations:
       description: '{{$labels.instance}} of job {{$labels.job}} has been down for more than 5 minutes.'
       summary: 'Instance {{$labels.instance}} down'
@@ -21,7 +21,7 @@ groups:
     expr: '((wmi_logical_disk_size_bytes{volume="C:"} - wmi_logical_disk_free_bytes{volume="C:"}) / wmi_logical_disk_size_bytes{volume="C:"} * 100) > 75'
     for: 5m
     labels:
-      severity: page
+      severity: critical
     annotations:
       description: '{{$labels.instance}} of job {{$labels.job}} has high disk usage
         (above 75% (current value is {{$value}})) on the system volume for more than
