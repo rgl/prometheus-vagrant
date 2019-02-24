@@ -29,8 +29,8 @@ if ($result -ne '[SC] ChangeServiceConfig2 SUCCESS') {
 }
 
 # download and install grafana.
-$archiveUrl = 'https://dl.grafana.com/oss/release/grafana-5.4.2.windows-amd64.zip'
-$archiveHash = 'e915670d9fd3e99a92bacefc026e9ef8f9e3687cbecc860397d0dff72c7bb70b'
+$archiveUrl = 'https://dl.grafana.com/oss/release/grafana-5.4.3.windows-amd64.zip'
+$archiveHash = '3f94f251f1de13a86fa449818560272b6d6dc130062ca2ef0fa1f97b63b6aa37'
 $archiveName = Split-Path $archiveUrl -Leaf
 $archivePath = "$env:TEMP\$archiveName"
 Write-Host 'Downloading Grafana...'
