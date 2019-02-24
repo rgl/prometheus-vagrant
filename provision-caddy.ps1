@@ -32,8 +32,8 @@ if ($result -ne '[SC] ChangeServiceConfig2 SUCCESS') {
 # install caddy for exposing the prometheus server at an https endpoint.
 # NB The Prometheus server itself does not support HTTPS or Authentication.
 #    see https://prometheus.io/docs/introduction/faq/#why-don-t-the-prometheus-server-components-support-tls-or-authentication-can-i-add-those
-$archiveUrl = 'https://github.com/mholt/caddy/releases/download/v0.11.1/caddy_v0.11.1_windows_amd64.zip'
-$archiveHash = '293cad875b646b4f63f48369a8e1a91eec37e9e2e7e05602d51cbad8e0214981'
+$archiveUrl = 'https://github.com/mholt/caddy/releases/download/v0.11.4/caddy_v0.11.4_windows_amd64.zip'
+$archiveHash = '6ddb5c44ae6ec5e8fbba571b5b7a2122f1f39be76649d124f96676772a9aac8a'
 $archiveName = Split-Path $archiveUrl -Leaf
 $archivePath = "$env:TEMP\$archiveName"
 Write-Host 'Downloading caddy...'
