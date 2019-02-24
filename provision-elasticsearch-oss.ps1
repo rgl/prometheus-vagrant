@@ -1,4 +1,3 @@
-# install dependencies.
 choco install -y server-jre8
 Import-Module "$env:ChocolateyInstall\helpers\chocolateyInstaller.psm1"
 Update-SessionEnvironment
@@ -6,8 +5,8 @@ Update-SessionEnvironment
 $elasticsearchHome = 'C:\elasticsearch'
 $elasticsearchServiceName = 'elasticsearch'
 $elasticsearchServiceUsername = "NT SERVICE\$elasticsearchServiceName"
-$archiveUrl = 'https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-6.5.4.zip'
-$archiveHash = 'e23e0f336bcd9f96145e10e77e7b513e95ad64fa4fbb13cf0693ba32e34f96a67b759f751ef9c389ad9224f10b8adcb6a519d79c3a74305d542c31f841c90c9a'
+$archiveUrl = 'https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-6.6.1.zip'
+$archiveHash = '025cd11e8876a1bac3b2e9f8cb1de677f84aebd55f3e60f9a4c2e1bfa7fa0d9a15f9a427a1bdd174375eaebc51b1082ba0dd4d267226c5a0a1ab8eab9a177b3b'
 $archiveName = Split-Path $archiveUrl -Leaf
 $archivePath = "$env:TEMP\$archiveName"
 
