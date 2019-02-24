@@ -153,6 +153,18 @@ New-GrafanaDashboard @{
     dashboard = $dashboard
 }
 
+# create a dashboard for PowerShellExporter.
+Write-Host 'Creating the pse dashboard...'
+$dashboard = (Get-Content -Raw C:\powershell-exporter\grafana-dashboard.json) `
+    -replace '\${DS_PROMETHEUS}','Prometheus' `
+    | ConvertFrom-Json
+$dashboard.PSObject.Properties.Remove('__inputs')
+$dashboard.PSObject.Properties.Remove('__requires')
+$dashboard.title = 'pse'
+New-GrafanaDashboard @{
+    dashboard = $dashboard
+}
+
 # create a dashboard for wmi_exporter.
 # NB this dashboard originaly came from https://grafana.com/dashboards/2129
 Write-Host 'Creating the wmi dashboard...'
