@@ -1614,7 +1614,7 @@
         "multi": false,
         "name": "server",
         "options": [],
-        "query": "label_values(up{job=\"backend-wmi\"}, instance)",
+        "query": "label_values(up{job=\"wmi\"}, instance)",
         "refresh": 1,
         "regex": "",
         "sort": 0,
