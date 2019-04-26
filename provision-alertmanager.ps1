@@ -36,8 +36,8 @@ if ($result -ne '[SC] ChangeServiceConfig2 SUCCESS') {
 }
 
 # download and install alertmanager.
-$archiveUrl = 'https://github.com/prometheus/alertmanager/releases/download/v0.16.1/alertmanager-0.16.1.windows-amd64.tar.gz'
-$archiveHash = '318b5a69c93ec4a406191394e777d9347e91face96187b6dce468919bf97dcc7'
+$archiveUrl = 'https://github.com/prometheus/alertmanager/releases/download/v0.16.2/alertmanager-0.16.2.windows-amd64.tar.gz'
+$archiveHash = 'ec295f61fed46c0e1a482f04cf0d15eabe1217ecf5a9d9a4eee31e1c07704039'
 $archiveName = Split-Path $archiveUrl -Leaf
 $archiveTarName = $archiveName -replace '\.gz',''
 $archivePath = "$env:TEMP\$archiveName"
