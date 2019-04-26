@@ -140,6 +140,10 @@ cp -Force GoogleChrome-external_extensions.json (Get-Item "$chromeLocation\*\def
 cp -Force GoogleChrome-master_preferences.json "$chromeLocation\master_preferences"
 cp -Force GoogleChrome-master_bookmarks.html "$chromeLocation\master_bookmarks.html"
 
+# set the default browser.
+choco install -y SetDefaultBrowser
+SetDefaultBrowser HKLM 'Google Chrome'
+
 # replace notepad with notepad2.
 choco install -y notepad2
 
