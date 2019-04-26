@@ -140,23 +140,8 @@ cp -Force GoogleChrome-external_extensions.json (Get-Item "$chromeLocation\*\def
 cp -Force GoogleChrome-master_preferences.json "$chromeLocation\master_preferences"
 cp -Force GoogleChrome-master_bookmarks.html "$chromeLocation\master_bookmarks.html"
 
-# replace notepad with notepad++.
-choco install -y notepadplusplus.install
-$archiveUrl = 'https://github.com/rgl/ApplicationReplacer/releases/download/v0.0.1/ApplicationReplacer.zip'
-$archiveHash = 'aeba158e5c7a6ecaaa95c8275b5bb4d6e032e016c6419adebb94f4e939b9a918'
-$archiveName = Split-Path $archiveUrl -Leaf
-$archivePath = "$env:TEMP\$archiveName"
-(New-Object Net.WebClient).DownloadFile($archiveUrl, $archivePath)
-$archiveActualHash = (Get-FileHash $archivePath -Algorithm SHA256).Hash
-if ($archiveHash -ne $archiveActualHash) {
-    throw "$archiveName downloaded from $archiveUrl to $archivePath has $archiveActualHash hash witch does not match the expected $archiveHash"
-}
-Expand-Archive $archivePath -DestinationPath 'C:\Program Files\ApplicationReplacer'
-Remove-Item $archivePath
-New-Item -Force -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\notepad.exe' `
-    | Set-ItemProperty `
-        -Name Debugger `
-        -Value '"C:\Program Files\ApplicationReplacer\ApplicationReplacer.exe" -- "C:\Program Files\Notepad++\notepad++.exe"'
+# replace notepad with notepad2.
+choco install -y notepad2
 
 # nssm is used to run applications (e.g. grafana) as windows services.
 choco install -y nssm
