@@ -6,8 +6,8 @@ $serviceName = 'prometheus-blackbox-exporter'
 $serviceUsername = "NT SERVICE\$serviceName"
 
 # install blackbox-exporter.
-$archiveUrl = 'https://github.com/prometheus/blackbox_exporter/releases/download/v0.13.0/blackbox_exporter-0.13.0.windows-amd64.tar.gz'
-$archiveHash = 'fed20c55826da0e57a86ee5afda603dcf4e9e58aa33b4548a057a4480105d8ac'
+$archiveUrl = 'https://github.com/prometheus/blackbox_exporter/releases/download/v0.14.0/blackbox_exporter-0.14.0.windows-amd64.tar.gz'
+$archiveHash = '21ea148870631310002cbd48be54ca45e8d300da5a902b0aec052f1a64316d93'
 $archiveName = Split-Path $archiveUrl -Leaf
 $archiveTarName = $archiveName -replace '\.gz',''
 $archivePath = "$env:TEMP\$archiveName"
@@ -22,6 +22,7 @@ Get-ChocolateyUnzip -FileFullPath $archivePath -Destination $serviceHome
 Get-ChocolateyUnzip -FileFullPath $serviceHome\$archiveTarName -Destination $serviceHome
 Remove-Item $serviceHome\$archiveTarName
 $archiveTempPath = Resolve-Path $serviceHome\blackbox_exporter-*
+Remove-Item "$archiveTempPath\blackbox.yml"
 Move-Item $archiveTempPath\* $serviceHome
 Remove-Item $archiveTempPath
 Remove-Item $archivePath
