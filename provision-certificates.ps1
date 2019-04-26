@@ -176,4 +176,5 @@ Import-PfxCertificate `
 New-ServerCertificate 'prometheus.example.com'
 New-ServerCertificate 'alertmanager.example.com'
 New-ServerCertificate 'elasticsearch.example.com'
+New-ServerCertificate 'kibana.example.com'
 New-ServerCertificate 'grafana.example.com'

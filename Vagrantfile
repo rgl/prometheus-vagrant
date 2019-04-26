@@ -3,6 +3,7 @@ hosts = '''
 10.10.10.100 alertmanager.example.com
 10.10.10.100 grafana.example.com
 10.10.10.100 elasticsearch.example.com
+10.10.10.100 kibana.example.com
 '''
 
 Vagrant.configure('2') do |config|
@@ -39,6 +40,7 @@ Vagrant.configure('2') do |config|
     config.vm.provision :shell, path: 'ps.ps1', args: 'provision-wmi-exporter.ps1'
     config.vm.provision :shell, path: 'ps.ps1', args: 'provision-blackbox-exporter.ps1'
     config.vm.provision :shell, path: 'ps.ps1', args: 'provision-elasticsearch-oss.ps1'
+    config.vm.provision :shell, path: 'ps.ps1', args: 'provision-kibana-oss.ps1'
     config.vm.provision :shell, path: 'ps.ps1', args: 'provision-prometheusbeat.ps1'
     config.vm.provision :shell, path: 'ps.ps1', args: 'provision-prometheus.ps1'
     config.vm.provision :shell, path: 'ps.ps1', args: 'provision-grafana.ps1'

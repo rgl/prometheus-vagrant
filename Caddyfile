@@ -25,6 +25,15 @@ https://elasticsearch.example.com {
     }
 }
 
+https://kibana.example.com {
+    log / stdout "{when} {host} {remote} - {user} \"{method} {uri} {proto}\" {status} {size} {latency_ms}"
+    errors stderr
+    tls tls/kibana.example.com-crt.pem tls/kibana.example.com-key.pem
+    proxy / 127.0.0.1:5601 {
+        transparent
+    }
+}
+
 https://grafana.example.com {
     log / stdout "{when} {host} {remote} - {user} \"{method} {uri} {proto}\" {status} {size} {latency_ms}"
     errors stderr
