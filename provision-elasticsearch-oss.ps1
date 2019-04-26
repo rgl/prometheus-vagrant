@@ -1,13 +1,14 @@
-choco install -y server-jre8
 Import-Module Carbon
 Import-Module "$env:ChocolateyInstall\helpers\chocolateyInstaller.psm1"
+
+choco install -y adoptopenjdk11jre
 Update-SessionEnvironment
 
 $elasticsearchHome = 'C:\elasticsearch'
 $elasticsearchServiceName = 'elasticsearch'
 $elasticsearchServiceUsername = "NT SERVICE\$elasticsearchServiceName"
-$archiveUrl = 'https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-6.6.1.zip'
-$archiveHash = '025cd11e8876a1bac3b2e9f8cb1de677f84aebd55f3e60f9a4c2e1bfa7fa0d9a15f9a427a1bdd174375eaebc51b1082ba0dd4d267226c5a0a1ab8eab9a177b3b'
+$archiveUrl = 'https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-6.7.1.zip'
+$archiveHash = 'c71f90319f5b13ffee305501e23b547d9df1c7d91e2537734930f792a66860b9eeb133f202f3e4a59223606477ccf965f31ce3d387e82f966de754ee40a30274'
 $archiveName = Split-Path $archiveUrl -Leaf
 $archivePath = "$env:TEMP\$archiveName"
 
