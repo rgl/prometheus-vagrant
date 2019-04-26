@@ -1,3 +1,6 @@
+Import-Module Carbon
+Import-Module "$env:ChocolateyInstall\helpers\chocolateyInstaller.psm1"
+
 $prometheusHome = 'C:/prometheus'
 $prometheusServiceName = 'prometheus-service' # NB you cannot change this. its hard-coded in the prometheus chocolatey package.
 $prometheusServiceUsername = "NT SERVICE\$prometheusServiceName"
@@ -15,8 +18,6 @@ if ($archiveHash -ne $archiveActualHash) {
     throw "$archiveName downloaded from $archiveUrl to $archivePath has $archiveActualHash hash witch does not match the expected $archiveHash"
 }
 Write-Host 'Installing Prometheus...'
-mkdir $prometheusHome | Out-Null
-Import-Module C:\ProgramData\chocolatey\helpers\chocolateyInstaller.psm1
 Get-ChocolateyUnzip -FileFullPath $archivePath -Destination $prometheusHome
 Get-ChocolateyUnzip -FileFullPath $prometheusHome\$archiveTarName -Destination $prometheusHome
 Remove-Item $prometheusHome\$archiveTarName

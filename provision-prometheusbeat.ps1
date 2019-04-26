@@ -1,3 +1,6 @@
+Import-Module Carbon
+Import-Module "$env:ChocolateyInstall\helpers\chocolateyInstaller.psm1"
+
 $prometheusbeatHome = 'C:\prometheusbeat'
 $prometheusbeatServiceName = 'prometheusbeat'
 $prometheusbeatServiceUsername = "NT SERVICE\$prometheusbeatServiceName"
@@ -77,7 +80,7 @@ if ($archiveHash -ne $archiveActualHash) {
     throw "$archiveName downloaded from $archiveUrl to $archivePath has $archiveActualHash hash witch does not match the expected $archiveHash"
 }
 Write-Host 'Installing Prometheusbeat...'
-Expand-Archive $archivePath -DestinationPath "$prometheusbeatHome.tmp"
+Get-ChocolateyUnzip -FileFullPath $archivePath -Destination "$prometheusbeatHome.tmp"
 mkdir $prometheusbeatHome | Out-Null
 Move-Item "$(Resolve-Path "$prometheusbeatHome.tmp\prometheusbeat-*")\*" $prometheusbeatHome
 rmdir -Recurse "$prometheusbeatHome.tmp"

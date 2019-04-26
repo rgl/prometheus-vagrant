@@ -1,3 +1,6 @@
+Import-Module Carbon
+Import-Module "$env:ChocolateyInstall\helpers\chocolateyInstaller.psm1"
+
 $alertmanagerHome = 'C:/alertmanager'
 $alertmanagerServiceName = 'alertmanager'
 $alertmanagerServiceUsername = "NT SERVICE\$alertmanagerServiceName"
@@ -45,8 +48,6 @@ if ($archiveHash -ne $archiveActualHash) {
     throw "$archiveName downloaded from $archiveUrl to $archivePath has $archiveActualHash hash witch does not match the expected $archiveHash"
 }
 Write-Host 'Installing Alertmanager...'
-mkdir $alertmanagerHome | Out-Null
-Import-Module C:\ProgramData\chocolatey\helpers\chocolateyInstaller.psm1
 Get-ChocolateyUnzip -FileFullPath $archivePath -Destination $alertmanagerHome
 Get-ChocolateyUnzip -FileFullPath $alertmanagerHome\$archiveTarName -Destination $alertmanagerHome
 Remove-Item $alertmanagerHome\$archiveTarName

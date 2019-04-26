@@ -1,4 +1,5 @@
 choco install -y server-jre8
+Import-Module Carbon
 Import-Module "$env:ChocolateyInstall\helpers\chocolateyInstaller.psm1"
 Update-SessionEnvironment
 
@@ -18,8 +19,7 @@ if ($archiveHash -ne $archiveActualHash) {
 }
 
 Write-Host 'Installing Elasticsearch...'
-mkdir $elasticsearchHome | Out-Null
-Expand-Archive $archivePath -DestinationPath $elasticsearchHome
+Get-ChocolateyUnzip -FileFullPath $archivePath -Destination $elasticsearchHome
 $elasticsearchArchiveTempPath = Resolve-Path $elasticsearchHome\elasticsearch-*
 Move-Item $elasticsearchArchiveTempPath\* $elasticsearchHome
 Remove-Item $elasticsearchArchiveTempPath

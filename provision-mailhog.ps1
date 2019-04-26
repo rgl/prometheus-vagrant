@@ -1,3 +1,5 @@
+Import-Module Carbon
+
 $mailhogHome = 'C:/mailhog'
 $mailHogPath = "$mailhogHome\MailHog.exe"
 $mailhogServiceName = 'mailhog'

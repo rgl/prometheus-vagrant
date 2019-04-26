@@ -1,3 +1,6 @@
+Import-Module Carbon
+Import-Module "$env:ChocolateyInstall\helpers\chocolateyInstaller.psm1"
+
 $caddyHome = 'C:\Program Files\Caddy'
 $caddyServiceName = 'caddy'
 $caddyServiceUsername = "NT SERVICE\$caddyServiceName"
@@ -43,7 +46,7 @@ if ($archiveHash -ne $archiveActualHash) {
     throw "$archiveName downloaded from $archiveUrl to $archivePath has $archiveActualHash hash witch does not match the expected $archiveHash"
 }
 Write-Host 'Installing caddy...'
-Expand-Archive $archivePath -DestinationPath $caddyHome
+Get-ChocolateyUnzip -FileFullPath $archivePath -Destination $caddyHome
 Remove-Item $archivePath
 Copy-Item c:/vagrant/Caddyfile $caddyHome
 mkdir $caddyHome/logs | Out-Null

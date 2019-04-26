@@ -1,3 +1,6 @@
+Import-Module Carbon
+Import-Module "$env:ChocolateyInstall\helpers\chocolateyInstaller.psm1"
+
 $serviceHome = 'C:/blackbox-exporter'
 $serviceName = 'prometheus-blackbox-exporter'
 $serviceUsername = "NT SERVICE\$serviceName"
@@ -15,8 +18,6 @@ if ($archiveHash -ne $archiveActualHash) {
     throw "$archiveName downloaded from $archiveUrl to $archivePath has $archiveActualHash hash witch does not match the expected $archiveHash"
 }
 Write-Host 'Installing blackbox-exporter...'
-mkdir $serviceHome | Out-Null
-Import-Module C:\ProgramData\chocolatey\helpers\chocolateyInstaller.psm1
 Get-ChocolateyUnzip -FileFullPath $archivePath -Destination $serviceHome
 Get-ChocolateyUnzip -FileFullPath $serviceHome\$archiveTarName -Destination $serviceHome
 Remove-Item $serviceHome\$archiveTarName

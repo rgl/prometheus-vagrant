@@ -1,3 +1,6 @@
+Import-Module Carbon
+Import-Module "$env:ChocolateyInstall\helpers\chocolateyInstaller.psm1"
+
 $grafanaHome = 'C:/grafana'
 $grafanaServiceName = 'grafana'
 $grafanaServiceUsername = "NT SERVICE\$grafanaServiceName"
@@ -40,8 +43,7 @@ if ($archiveHash -ne $archiveActualHash) {
     throw "$archiveName downloaded from $archiveUrl to $archivePath has $archiveActualHash hash witch does not match the expected $archiveHash"
 }
 Write-Host 'Installing Grafana...'
-mkdir $grafanaHome | Out-Null
-Expand-Archive $archivePath -DestinationPath $grafanaHome
+Get-ChocolateyUnzip -FileFullPath $archivePath -Destination $grafanaHome
 $grafanaArchiveTempPath = Resolve-Path $grafanaHome\grafana-*
 Move-Item $grafanaArchiveTempPath\* $grafanaHome
 Remove-Item $grafanaArchiveTempPath

@@ -1,3 +1,5 @@
+Import-Module "$env:ChocolateyInstall\helpers\chocolateyInstaller.psm1"
+
 $serviceHome = 'C:\performance-counters-exporter'
 $serviceName = 'PerformanceCountersExporter'
 
@@ -13,7 +15,7 @@ if ($archiveHash -ne $archiveActualHash) {
     throw "$archiveName downloaded from $archiveUrl to $archivePath has $archiveActualHash hash witch does not match the expected $archiveHash"
 }
 Write-Host 'Installing performance-counters-exporter...'
-Expand-Archive $archivePath $serviceHome
+Get-ChocolateyUnzip -FileFullPath $archivePath -Destination $serviceHome
 
 Write-Host "Installing the $serviceName service..."
 &"$serviceHome\PerformanceCountersExporter" install
