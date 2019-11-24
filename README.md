@@ -39,6 +39,13 @@ Exporters are listening in the loopback interface and are made available from th
 
 [Prometheusbeat](https://github.com/infonova/prometheusbeat) is also installed. It's used as a [prometheus remote write](https://prometheus.io/docs/operating/integrations/#remote-endpoints-and-storage) endpoint, which uses Elasticsearch as a long term storage solution.
 
+# Scaling
+
+* [Cortex](http://cortexmetrics.io/)
+* [M3DB](https://www.m3db.io/)
+* [Thanos](https://thanos.io/)
+
 # Reference
 
 * [Exporters and their default port allocations](https://github.com/prometheus/prometheus/wiki/Default-port-allocations)
+* [Prometheus Deep Dive (KubeCon NA 2019)](https://www.youtube.com/watch?v=Me-kZi4xkEs)
