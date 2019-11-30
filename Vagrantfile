@@ -8,7 +8,7 @@ hosts = '''
 
 Vagrant.configure('2') do |config|
   config.vm.provider "libvirt" do |lv, config|
-    lv.memory = 3*1024
+    lv.memory = 4*1024
     lv.cpus = 2
     lv.cpu_mode = "host-passthrough"
     lv.keymap = "pt"
@@ -20,7 +20,7 @@ Vagrant.configure('2') do |config|
   config.vm.provider :virtualbox do |v, override|
     v.linked_clone = true
     v.cpus = 2
-    v.memory = 3*1024
+    v.memory = 4*1024
     v.customize ['modifyvm', :id, '--vram', 64]
     v.customize ['modifyvm', :id, '--clipboard', 'bidirectional']
   end
