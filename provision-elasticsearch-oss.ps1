@@ -7,8 +7,9 @@ Update-SessionEnvironment
 $elasticsearchHome = 'C:\elasticsearch'
 $elasticsearchServiceName = 'elasticsearch'
 $elasticsearchServiceUsername = "NT SERVICE\$elasticsearchServiceName"
-$archiveUrl = 'https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-6.7.1.zip'
-$archiveHash = 'c71f90319f5b13ffee305501e23b547d9df1c7d91e2537734930f792a66860b9eeb133f202f3e4a59223606477ccf965f31ce3d387e82f966de754ee40a30274'
+# see https://www.elastic.co/downloads/past-releases/elasticsearch-oss-6-8-5
+$archiveUrl = 'https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-6.8.5.zip'
+$archiveHash = 'de7dc38575551c4a9dcdfd85b178e3817e1437e70db1fda0792986fc0c145e7cf0dcc7bd4ae5f32e50e94d44cab11f6100bb21cc39700ca21723ca016c0a5edc'
 $archiveName = Split-Path $archiveUrl -Leaf
 $archivePath = "$env:TEMP\$archiveName"
 
